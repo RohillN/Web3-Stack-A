@@ -1,0 +1,11 @@
+{% include "head.html" %}
+
+    <h1>Hello {{ name }}</h1>
+
+    <ul>
+        {% for i in range(5) %}
+            {% include "listItem.html" %}
+        {% endfor %}
+    </ul>
+
+{% include "footer.html" %}

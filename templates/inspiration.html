@@ -1,0 +1,51 @@
+{% include "head.html" %}
+
+{% include "navigation.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <div class="row mt-5 mb-5">
+                    <div class="card-group">
+                        <div class="card text-center m-1 p-1">
+                            <img src="{{ url_for('static', filename='img/placeholder-img.png') }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Fabrik</h5>
+                                <p class="card-text">This website caught my interest with the large and dark background
+                                    image, with the contrast of the white text over the top of the image. Having the
+                                    positive and negative colors brings my eyes attention to the text first, then the
+                                    background. I plan to use some sort of positive and negative color palette to a
+                                    specific area of my website to bring out any important text or data.</p>
+                                <a href="https://fabrik.io/" class="btn btn-primary">Go to site!</a>
+                            </div>
+                        </div>
+                        <div class="card text-center m-1 p-1">
+                            <img src="{{ url_for('static', filename='img/placeholder-img.png') }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">O3World</h5>
+                                <p class="card-text">When scrolling down the website, all the content is split 50/50,
+                                    giving it a grid style. This is a design choice i would consider using within my own
+                                    website. This 50/50 split can be used as its own section within the website to
+                                    display images or text that can be linked off to different websites etc.</p>
+                                <a href=" https://www.o3world.com/" class="btn btn-primary">Go to site!</a>
+                            </div>
+                        </div>
+                        <div class="card text-center m-1 p-1">
+                            <img src="{{ url_for('static', filename='img/placeholder-img.png') }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Wire</h5>
+                                <p class="card-text">This website incorporates the use of the 50/50 grid style, but
+                                    tends to use more white space. The white space gives a clean and simplistic look to
+                                    the overall website.</p>
+                                <a href="https://wire.com/en/" class="btn btn-primary">Go to site!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+
+{% include "footer.html" %}
