@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for
 from mongoengine import *
 
 app = Flask(__name__)
+app.run(host='0.0.0.0', port=80)
 
 connect('my_database')
 
