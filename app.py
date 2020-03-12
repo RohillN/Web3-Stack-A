@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, url_for
 from mongoengine import *
 
 app = Flask(__name__)
-app.run(host='0.0.0.0', port=80)
 
 connect('my_database')
 
@@ -51,3 +50,4 @@ def list_user():
 
 if __name__ =="__main__":
     app.run(debug=True, port=8080)
+    app.run(host='0.0.0.0', port=80)
