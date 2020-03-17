@@ -10,19 +10,22 @@ class User(Document):
 	first_name = StringField()
 	last_name = StringField()
 
+class Country(Document):
+        name = StringField()
+
 @app.route('/')
 @app.route('/index')
 @app.route('/home')
-def hello_world():
-    return render_template('index.html')
+def hello_world():  
+        return render_template('index.html')
 	
 @app.route('/inspiration')
 def inspiration():
-    return render_template('inspiration.html')
+        return render_template('inspiration.html')
 	
 @app.route('/forloop')
 def for_loop():
-    return render_template('forloop.html')
+        return render_template('forloop.html')
 	
 @app.route('/template')
 def view():
@@ -47,6 +50,12 @@ def list_all_users():
 @app.route('/listUsers')
 def list_user():
 	return User.objects.to_json()
+
+@app.route('/countries', methods=['GET'])
+def getAllCountries():
+        Country(name='New Zealand').save()
+        countries = Country.objects
+        return countries.to_json()
 
 if __name__ =="__main__":
     app.run(debug=True, port=8080)
