@@ -13,21 +13,27 @@ class User(Document):
 	last_name = StringField()
 
 class Country(Document):
-        name = StringField()
+	name = StringField()
 
 @app.route('/')
 @app.route('/index')
 @app.route('/home')
 def hello_world():  
-        return render_template('index.html')
+	path = os.path.join(app.config['FILES_FOLDER'],"data1.csv")
+	f = open(path)
+	r = csv.reader(f)
+	d = list(r)
+	for data in d:
+		print (data)
+    return render_template('index.html', country=data)
 	
 @app.route('/inspiration')
 def inspiration():
-        return render_template('inspiration.html')
+	return render_template('inspiration.html')
 	
 @app.route('/forloop')
 def for_loop():
-        return render_template('forloop.html')
+    return render_template('forloop.html')
 	
 @app.route('/template')
 def view():
@@ -55,9 +61,9 @@ def list_user():
 
 @app.route('/countries', methods=['GET'])
 def getAllCountries():
-        Country(name='New Zealand').save()
-        countries = Country.objects
-        return countries.to_json()
+    Country(name='New Zealand').save()
+    countries = Country.objects
+    return countries.to_json()
 
 if __name__ =="__main__":
     app.run(debug=True, port=8080)
