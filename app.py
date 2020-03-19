@@ -3,6 +3,8 @@ from mongoengine import *
 
 app = Flask(__name__)
 
+app.config.from_object('config')
+
 connect('my_database')
 
 class User(Document):
