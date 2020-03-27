@@ -1,5 +1,7 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from mongoengine import *
+import os
+import json
 
 app = Flask(__name__)
 
@@ -19,13 +21,7 @@ class Country(Document):
 @app.route('/index')
 @app.route('/home')
 def hello_world():  
-	path = os.path.join(app.config['FILES_FOLDER'],"data1.csv")
-	f = open(path)
-	r = csv.reader(f)
-	d = list(r)
-	for data in d:
-		print (data)
-    return render_template('index.html', country=data)
+    return render_template('index.html')
 	
 @app.route('/inspiration')
 def inspiration():
@@ -55,9 +51,11 @@ def list_all_users():
 		currentUser.append(u.first_name)
 	return render_template('listUsersTest.html', name=currentUser)
 	
-@app.route('/listUsers')
-def list_user():
-	return User.objects.to_json()
+
+@app.route('/testGetMethod', methods=['GET'])
+def testGetMethod():
+	users = User.objects
+	return users.to_json()
 
 @app.route('/countries', methods=['GET'])
 def getAllCountries():
@@ -66,5 +64,4 @@ def getAllCountries():
     return countries.to_json()
 
 if __name__ =="__main__":
-    app.run(debug=True, port=8080)
     app.run(host='0.0.0.0', port=80)
