@@ -51,11 +51,33 @@ def list_all_users():
 def list_user():
 	return User.objects.to_json()
 
+@app.route('/testGetMethod', methods=['GET'])
+def testGetMethod():
+	User(user_id='1', email='rohillnand1@gmail.com', first_name='Rohill', last_name='Nand').save()
+	User(user_id='2', email='test@gmail.com', first_name='test-first', last_name='test-last').save()
+	users = User.objects
+	return users.to_json()
+
+@app.route('/users/<user>', methods=['GET'])
+def getUserById(user):
+    users = User.objects.get(user_id=user)
+    return users.to_json()
+
 @app.route('/countries', methods=['GET'])
 def getAllCountries():
         Country(name='New Zealand').save()
         countries = Country.objects
         return countries.to_json()
+
+@app.route('/countries')
+def getAllCountries():
+    path = os.path.join(app.config['FILES_FOLDER'],"data1.csv")
+	f = open(path)
+	r = csv.reader(f)
+	d = list(r)
+	for data in d:
+		print (data)
+	
 
 if __name__ =="__main__":
     app.run(debug=True, port=8080)

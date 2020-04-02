@@ -1,1 +1,20 @@
 /* Start Adding custom styles if wanted */
+
+header {
+    margin: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.standard-spacing {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.img-resize {
+    width: 100%;
+}
