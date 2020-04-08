@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify
 from mongoengine import *
 import os
 import json
@@ -10,6 +10,9 @@ app.config.from_object('config')
 
 connect('my_database')
 
+class User(Document):
+	name = StringField()
+
 class Country(Document):
 	name = StringField()
 
@@ -18,7 +21,6 @@ class Country(Document):
 @app.route('/home')
 def hello_world():  
 	country = []
-	countryName = []
 	path = os.path.join(app.config['FILES_FOLDER'], "data1.csv")
 	f = open(path)
 	r = csv.reader(f)
@@ -27,7 +29,7 @@ def hello_world():
 		country.append({
 			"name" : data
 		})
-	return render_template('index.html', info=country)
+	return render_template('index.html', info=country), 200
 	
 @app.route('/inspiration')
 def inspiration():
@@ -43,8 +45,14 @@ def loadData():
 
 @app.route('/getCountries', methods=['GET'])
 def getCountries():
-    countries = Country.objects
-    return countries.to_json()
+    return render_template('getCountries.html')
+
+@app.route('/postCountries', methods=['POST'])
+def postCountries():
+	req = request.get_json()
+	print(req)
+	response = make_response(jsonify(req), 200)
+	return response
 
 @app.route('/countries/<countries_id>', methods=['GET'])
 def getUserById(countries_id):
@@ -56,16 +64,10 @@ def putCountries():
     countries = Country.objects
     return countries.to_json()
 
-@app.route('/postCountries', methods=['POST'])
-def postCountries():
-    countries = Country.objects
-    return countries.to_json()
-
 @app.route('/deleteCountries', methods=['DELETE'])
 def deleteCountries():
     countries = Country.objects
     return countries.to_json()
-
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)
