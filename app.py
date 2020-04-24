@@ -22,7 +22,7 @@ class Country(Document):
 @app.route('/index')
 @app.route('/home')
 def hello_world():  
-	return render_template('index.html', info=country), 200
+	return render_template('index.html'), 200
 	
 @app.route('/inspiration')
 def inspiration():
