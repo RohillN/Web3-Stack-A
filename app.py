@@ -53,7 +53,7 @@ def test(country_name=None):
 		country = Country.objects
 	else:
 		country = Country.objects.get(name=country_name)
-	return country.to_json()
+	return country.to_json(), 200
 
 @app.route('/postCountries', methods=['POST'])
 def postCountries():
