@@ -48,12 +48,15 @@ def loadData():
 @app.route('/countries', methods=['GET'])
 @app.route('/countries/<country_name>', methods=['GET'])
 def test(country_name=None):
+	countryList = []
 	country = None
 	if country_name is None:
-		country = Country.objects
+		for c in Country.objects:
+			countryList.append(c.name)
 	else:
 		country = Country.objects.get(name=country_name)
-	return country.to_json(), 200
+		countryList.append(country.name)
+	return render_template('countries.html', countries = countryList)
 
 @app.route('/postCountries', methods=['POST'])
 def postCountries():
@@ -64,4 +67,4 @@ def postCountries():
 
 
 if __name__ =="__main__":
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0')
