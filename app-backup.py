@@ -38,6 +38,13 @@ def view():
 def redirect_route():
 	return redirect(url_for('view'))
 	
+@app.route('/users', methods=['GET'])
+def users():
+	User(email='rohillnand1@gmail.com', first_name='Rohill', last_name='Nand').save()
+	User(email='test@gmail.com', first_name='test-first', last_name='test-last').save()
+	user = User.objects
+	return user.to_json()
+
 @app.route('/listAllUsers')
 def list_all_users():
 	User(email='rohillnand1@gmail.com', first_name='Rohill', last_name='Nand').save()
@@ -78,7 +85,32 @@ def getAllCountries():
 	for data in d:
 		print (data)
 	
+@app.route('/countries/<countries_id>', methods=['GET'])
+def getUserById(countries_id):
+    countries = Country.objects.get(name=countries_id)
+    return countries.to_json()
+
+@app.route('/putCountries', methods=['PUT'])
+def putCountries():
+    countries = Country.objects
+    return countries.to_json()
+
+@app.route('/deleteCountries', methods=['DELETE'])
+def deleteCountries():
+    countries = Country.objects
+    return countries.to_json()
 
 if __name__ =="__main__":
     app.run(debug=True, port=8080)
     app.run(host='0.0.0.0', port=80)
+
+
+
+
+
+@app.route('/countries', methods=['GET'])
+def countries():
+	currentCountry = []
+	for c in Country.object():
+		currentCountry.append({ "name" : c.name })
+	return render_template('countries.html', countries = currentCountry)

@@ -1,0 +1,14 @@
+{% include "head.html" %}
+
+{% include "navigation.html" %}
+
+    <div class="container">
+       
+        <h1>Countries</h1>
+
+        {% for country in countries %}
+            <p>{{ country }}</p>
+        {% endfor %}
+        
+    </div>
+{% include "footer.html" %}

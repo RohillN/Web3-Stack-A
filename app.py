@@ -11,7 +11,9 @@ app.config.from_object('config')
 connect('my_database')
 
 class User(Document):
-	name = StringField()
+	email = StringField()
+	first_name = StringField()
+	last_name = StringField()
 
 class Country(Document):
 	name = StringField()
@@ -43,9 +45,15 @@ def loadData():
 	Country(name="Japan").save()
 	return "Success"
 
-@app.route('/getCountries', methods=['GET'])
-def getCountries():
-    return render_template('getCountries.html')
+@app.route('/countries', methods=['GET'])
+@app.route('/countries/<country_name>', methods=['GET'])
+def test(country_name=None):
+	country = None
+	if country_name is None:
+		country = Country.objects
+	else:
+		country = Country.objects.get(name=country_name)
+	return country.to_json()
 
 @app.route('/postCountries', methods=['POST'])
 def postCountries():
@@ -54,20 +62,6 @@ def postCountries():
 	response = make_response(jsonify(req), 200)
 	return response
 
-@app.route('/countries/<countries_id>', methods=['GET'])
-def getUserById(countries_id):
-    countries = Country.objects.get(name=countries_id)
-    return countries.to_json()
-
-@app.route('/putCountries', methods=['PUT'])
-def putCountries():
-    countries = Country.objects
-    return countries.to_json()
-
-@app.route('/deleteCountries', methods=['DELETE'])
-def deleteCountries():
-    countries = Country.objects
-    return countries.to_json()
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)
