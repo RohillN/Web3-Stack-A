@@ -22,15 +22,6 @@ class Country(Document):
 @app.route('/index')
 @app.route('/home')
 def hello_world():  
-	country = []
-	path = os.path.join(app.config['FILES_FOLDER'], "data1.csv")
-	f = open(path)
-	r = csv.reader(f)
-	d = list(r)
-	for data in d:
-		country.append({
-			"name" : data
-		})
 	return render_template('index.html', info=country), 200
 	
 @app.route('/inspiration')
@@ -45,6 +36,20 @@ def loadData():
 	Country(name="Japan").save()
 	return "Success"
 
+@app.route('/loadcsv')
+def loadCSV():
+	country = []
+	path = os.path.join(app.config['FILES_FOLDER'], "data1.csv")
+	f = open(path)
+	r = csv.reader(f)
+	d = list(r)
+	for data in d:
+		country.append({
+			"name" : data
+		})
+	return render_template('loadcsv.html', countries=country), 200
+
+
 @app.route('/countries', methods=['GET'])
 @app.route('/countries/<country_name>', methods=['GET'])
 def test(country_name=None):
@@ -56,7 +61,7 @@ def test(country_name=None):
 	else:
 		country = Country.objects.get(name=country_name)
 		countryList.append(country.name)
-	return render_template('countries.html', countries = countryList)
+	return render_template('countries.html', countries = countryList), 200
 
 @app.route('/postCountries', methods=['POST'])
 def postCountries():
