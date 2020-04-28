@@ -31,6 +31,8 @@ $(function() {
             data: storeCountry,
             success: function(newCountry) {
                 $country.append('<li>Name: ' + newCountry +'</li>');
+                $('#name').val('');
+                console.log('Countries Post Method: { name: ' + ' ' + newCountry + ' }');
             }            
         });
     });
