@@ -6,14 +6,14 @@ $(function () {
 
 $(function() {
 
-    var $testcountry = $('#testcountry');
+    var $country = $('#country');
 
     $.ajax({
         type: 'GET',
         url: '/getcountries',
         success: function(data) {
             $.each(data, function(i, item) {
-                $testcountry.append('<li>name: ' + item.name +'</li>');
+                $country.append('<li>Name: ' + item.name +'</li>');
             });
         }
     });
