@@ -6,6 +6,10 @@ $(function () {
 
 $(function() {
 
+    function addCountry(country) {
+        $country.append('<li>Name: ' + country.name +'</li>');
+    }
+    
     var $country = $('#country');
     var $name = $('#name');
 
@@ -14,7 +18,7 @@ $(function() {
         url: '/getcountries',
         success: function(data) {
             $.each(data, function(i, item) {
-                $country.append('<li>Name: ' + item.name +'</li>');
+                addCountry(item)
             })
             console.log('Countries Get Method Data Loaded');
         }
