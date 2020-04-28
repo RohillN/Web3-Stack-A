@@ -4,16 +4,14 @@
 
     <div class="container">
        
-        <h1 class="text-center">Countries from MongoDB</h1>
+        <h1 class="text-center">Countries from MongoDB</h1>   
 
-        {% for country in countries %}
-            <ul>
-                <li>{{ country }}</li>
-            </ul>
-        {% endfor %}
-        
         <div>
             <ul id="country"></ul>
+        </div>
+        <div>
+            <p>Name: <input type="text" id="name"></p>
+            <button id="add-country">Add Country</button>
         </div>
     </div>
 {% include "footer.html" %}

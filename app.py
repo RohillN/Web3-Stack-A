@@ -50,30 +50,37 @@ def loadCSV():
 	return render_template('loadcsv.html', countries=country), 200
 
 
-@app.route('/getcountries', methods=['GET'])
+@app.route('/getcountries', methods=['GET', 'POST'])
 @app.route('/getcountries/<country_name>', methods=['GET'])
 def getCountries(country_name=None):
-	countryList = []
-	country = None
-	if country_name is None:
-		for c in Country.objects:
-			countryList.append({'name' : c.name})
-	else:
-		country = Country.objects.get(name=country_name)
-		countryList.append({'name' : country.name})
-	return jsonify(countryList)
+	if request.method == 'GET':
+		countryList = []
+		country = None
+		if country_name is None:
+			for c in Country.objects:
+				countryList.append({'name' : c.name})
+		else:
+			country = Country.objects.get(name=country_name)
+			countryList.append({'name' : country.name})
+		return jsonify(countryList)
+	
+	if request.method == 'POST':
+		req = request.form.get('name')
+		Country(name=req).save()
+		return req
+
+@app.route('/postcountries', methods=['POST'])
+def postCountries():
+	req = request.form.get('name')
+
+	console.log(req)
+	print(req)
+	Country(name=req).save()
+	return jsonify(req)
 
 @app.route('/countries')
 def viewcountry():
 	return render_template('/countries.html')
-
-@app.route('/postCountries', methods=['POST'])
-def postCountries():
-	req = request.get_json()
-	print(req)
-	response = make_response(jsonify(req), 200)
-	return response
-
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0')
