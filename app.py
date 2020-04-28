@@ -50,18 +50,22 @@ def loadCSV():
 	return render_template('loadcsv.html', countries=country), 200
 
 
-@app.route('/countries', methods=['GET'])
-@app.route('/countries/<country_name>', methods=['GET'])
-def test(country_name=None):
+@app.route('/getcountries', methods=['GET'])
+@app.route('/getcountries/<country_name>', methods=['GET'])
+def getCountries(country_name=None):
 	countryList = []
 	country = None
 	if country_name is None:
 		for c in Country.objects:
-			countryList.append(c.name)
+			countryList.append({'name' : c.name})
 	else:
 		country = Country.objects.get(name=country_name)
-		countryList.append(country.name)
-	return render_template('countries.html', countries = countryList), 200
+		countryList.append({'name' : country.name})
+	return jsonify(countryList)
+
+@app.route('/countries')
+def viewcountry():
+	return render_template('/countries.html')
 
 @app.route('/postCountries', methods=['POST'])
 def postCountries():
