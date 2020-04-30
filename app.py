@@ -51,7 +51,7 @@ def loadCSV():
 
 
 @app.route('/getcountries', methods=['GET', 'POST'])
-@app.route('/getcountries/<country_name>', methods=['GET'])
+@app.route('/getcountries/<country_name>', methods=['GET', 'DELETE'])
 def getCountries(country_name=None):
 	if request.method == 'GET':
 		countryList = []
@@ -69,15 +69,15 @@ def getCountries(country_name=None):
 		req = request.form.get('name')
 		Country(name=req).save()
 		return req
-
-@app.route('/postcountries', methods=['POST'])
-def postCountries():
-	req = request.form.get('name')
-
-	console.log(req)
-	print(req)
-	Country(name=req).save()
-	return jsonify(req)
+	
+	if request.method == 'DELETE':
+		delete = request.form.get('dCountry')
+		if country_name is not None:
+			for c in Country.objects:
+					if c.name == country_name:
+						Country.objects(name=c.name).delete()
+		return req
+		
 
 @app.route('/countries')
 def viewcountry():

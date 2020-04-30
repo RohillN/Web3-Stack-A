@@ -100,13 +100,14 @@ def deleteCountries():
     countries = Country.objects
     return countries.to_json()
 
-if __name__ =="__main__":
-    app.run(debug=True, port=8080)
-    app.run(host='0.0.0.0', port=80)
+@app.route('/postcountries', methods=['POST'])
+def postCountries():
+	req = request.form.get('name')
 
-
-
-
+	console.log(req)
+	print(req)
+	Country(name=req).save()
+	return jsonify(req)
 
 @app.route('/countries', methods=['GET'])
 def countries():
@@ -114,3 +115,9 @@ def countries():
 	for c in Country.object():
 		currentCountry.append({ "name" : c.name })
 	return render_template('countries.html', countries = currentCountry)
+
+if __name__ =="__main__":
+    app.run(debug=True, port=8080)
+    app.run(host='0.0.0.0', port=80)
+
+

@@ -101,3 +101,24 @@ function postCountry($country)
         }
     });
 }
+
+$(function()
+{ 
+        $('#delete-country').on('click', function() {
+
+        var $deleteName = $('#dCountry');
+
+        var $countryToDelete = {
+            'name' : $deleteName.val()
+        }
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/getcountries/' + $countryToDelete.name,
+            success: function() {
+                console.log($countryToDelete.name);
+                $deleteName.val('');
+            }
+        }), 200;
+    });
+});
