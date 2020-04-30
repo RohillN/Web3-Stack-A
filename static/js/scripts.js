@@ -8,7 +8,7 @@ $(function () {
 $(function() {
 
     function addCountry(country) {
-        $country.append('<li>Name: ' + country.name +'</li>');
+        $country.append('<p class="bg-success">Name: ' + country.name +'</p>');
     }
     
     var $country = $('#country');
@@ -23,7 +23,7 @@ $(function() {
             });
             console.log('Countries Get Method Data Loaded');
         }
-    });
+    }), 200;
     postCountry($country);
 });
 
@@ -61,7 +61,7 @@ $(function()
                     console.log('Get: ' + ' { name: ' + item.name + ' }');
                 });
             }
-        });
+        }), 200;
     });
 });
 
@@ -93,11 +93,11 @@ function postCountry($country)
                 url: '/getcountries',
                 data: storeCountry,
                 success: function(newCountry) {
-                    $country.append('<li>Name: ' + newCountry +'</li>');
+                    $country.append('<p class="bg-danger">Name: ' + newCountry +'</p>');
                     $name.val('');
                     console.log('Countries Post Method: { name: ' + ' ' + newCountry + ' }');
                 }            
-            });
+            }), 200;
         }
     });
 }
