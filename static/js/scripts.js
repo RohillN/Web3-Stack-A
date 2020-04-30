@@ -21,32 +21,54 @@ $(function() {
         success: function(data) {
             $.each(data, function(i, item) {
                 addCountry(item)
+                console.log(item);
             });
             console.log('Countries Get Method Data Loaded');
         }
     });
 
     $('#add-country').on('click', function() {
-
-        var storeCountry = {
-            "name" : $name.val() 
-        };
-        $.ajax({
-            type: 'POST',
-            url: '/getcountries',
-            data: storeCountry,
-            success: function(newCountry) {
-                $country.append('<li>Name: ' + newCountry +'</li>');
-                $name.val('');
-                console.log('Countries Post Method: { name: ' + ' ' + newCountry + ' }');
-            }            
-        });
+        var hasName;
+        if ($name.val().length != 0)
+        {
+            var storeCountry = {
+                "name" : $name.val() 
+            };
+            hasName = true;
+        }
+        else 
+        {
+            alert('Invalid Input, Please Try Again');
+            hasName = false;
+        }
+        if (hasName)
+        {
+            $.ajax({
+                type: 'POST',
+                url: '/getcountries',
+                data: storeCountry,
+                success: function(newCountry) {
+                    $country.append('<li>Name: ' + newCountry +'</li>');
+                    $name.val('');
+                    console.log('Countries Post Method: { name: ' + ' ' + newCountry + ' }');
+                }            
+            });
+        }
     });
 
     $('#search-country').on('click', function() {
-        var findCountry = {
-            "name" : $searchName.val()
-        };
+
+        if ($searchName.val().length != 0)
+        {
+            var findCountry = {
+                "name" : $searchName.val()
+            };
+        }
+        else 
+        {
+            alert('Invalid Input, Please Try Again');
+        }
+
 
         $.ajax({
             type: 'GET',
@@ -56,6 +78,7 @@ $(function() {
                     $('#foundHeading').text('Country Search Result');
                     $foundCountry.text('Name: ' + item.name);
                     $searchName.val('');
+                    console.log('Get: ' + ' { name: ' + item.name + ' }');
                 });
             }
         });
