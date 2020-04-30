@@ -59,9 +59,10 @@ def getCountries(country_name=None):
 		if country_name is None:
 			for c in Country.objects:
 				countryList.append({'name' : c.name})
-		else:
-			country = Country.objects.get(name=country_name)
-			countryList.append({'name' : country.name})
+		if country_name is not None:
+			for c in Country.objects:
+				if c.name == country_name:
+					countryList.append({'name' : c.name})
 		return jsonify(countryList)
 	
 	if request.method == 'POST':
@@ -83,4 +84,4 @@ def viewcountry():
 	return render_template('/countries.html')
 
 if __name__ =="__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)

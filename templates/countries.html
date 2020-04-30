@@ -2,16 +2,30 @@
 
 {% include "navigation.html" %}
 
-    <div class="container">
+    <div class="container bg-light">
        
         <h1 class="text-center">Countries from MongoDB</h1>   
 
-        <div>
+        <div class="row">
+            <div class="col-6">
+                <h3 class="text-center">Add Country</h3>
+                <p>Name: <input type="text" id="name"></p>
+                <button id="add-country">Add Country</button>
+            </div>
+            <div class="col-6">
+                <h3 class="text-center">Find Single Country</h3>
+                <p class="text-center"><em>Enter the country name</em></p>
+                <p>Name: <input type="text" id="sCountry"></p>
+                <button id="search-country">Find Country</button>
+            </div>
+        </div>
+        <hr>
+        <div class="mt-5">
             <ul id="country"></ul>
         </div>
-        <div>
-            <p>Name: <input type="text" id="name"></p>
-            <button id="add-country">Add Country</button>
+        <div class="mt-5">
+            <h3 id="foundHeading"></h3>
+            <p id="foundCountry"></p>
         </div>
     </div>
 {% include "footer.html" %}
