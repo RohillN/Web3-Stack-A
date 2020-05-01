@@ -2,15 +2,14 @@ $(function () {
     console.log("Statics route for scripts loaded!");
 });
 
-
 //GET: all countries from mongodb
 //This function will happen on page load
 $(function() {
 
     function addCountry(country) {
-        $country.append('<p class="bg-success">Name: ' + country.name +'</p>');
+        $country.append('<p id=' + '"' + country.name.toLowerCase() + '"' + 'class="bg-success">Name: ' + country.name +'</p>');
     }
-    
+
     var $country = $('#country');
 
     $.ajax({
@@ -22,6 +21,7 @@ $(function() {
                 console.log(item);
             });
             console.log('Countries Get Method Data Loaded');
+            console.log($country);
         }
     }), 200;
     postCountry($country);
@@ -93,7 +93,7 @@ function postCountry($country)
                 url: '/getcountries',
                 data: storeCountry,
                 success: function(newCountry) {
-                    $country.append('<p class="bg-danger">Name: ' + newCountry +'</p>');
+                    $country.append('<p id=' + '"' + newCountry.toLowerCase() + '"' + 'class="bg-danger">Name: ' + newCountry +'</p>');
                     $name.val('');
                     console.log('Countries Post Method: { name: ' + ' ' + newCountry + ' }');
                 }            
@@ -104,6 +104,13 @@ function postCountry($country)
 
 $(function()
 { 
+        function addCountry(country) {
+            $country.reload;
+            $country.append('<p class="bg-success">Name: ' + country.name +'</p>');
+        }
+    
+        var $country = $('#country');
+
         $('#delete-country').on('click', function() {
 
         var $deleteName = $('#dCountry');
@@ -116,7 +123,9 @@ $(function()
             type: 'DELETE',
             url: '/getcountries/' + $countryToDelete.name,
             success: function() {
-                console.log($countryToDelete.name);
+                var $findDeletedOne = $('#' + $countryToDelete.name.toLowerCase());
+                $findDeletedOne.text('');
+                console.log('This is the id for the one deleted: ' + $findDeletedOne.val());
                 $deleteName.val('');
             }
         }), 200;
