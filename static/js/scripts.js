@@ -102,6 +102,9 @@ function postCountry($country)
     });
 }
 
+
+//DELETE: remove country from mongo 
+//issue: new zealand cant be deleted because of the space " "
 $(function()
 { 
         function addCountry(country) {
@@ -125,7 +128,7 @@ $(function()
             success: function() {
                 var $findDeletedOne = $('#' + $countryToDelete.name.toLowerCase());
                 $findDeletedOne.text('');
-                console.log('This is the id for the one deleted: ' + $findDeletedOne.val());
+                console.log('This is the id for the one deleted: { name : ' + $countryToDelete.name + ' }');
                 $deleteName.val('');
             }
         }), 200;
