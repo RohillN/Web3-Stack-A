@@ -59,6 +59,7 @@ $(function()
                     $foundCountry.text('Name: ' + item.name);
                     $searchName.val('');
                     console.log('Get: ' + ' { name: ' + item.name + ' }');
+                    
                 });
             }
         }), 200;
