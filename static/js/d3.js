@@ -1,16 +1,20 @@
 $(function()
 {
-    var data = [1,2,3,4,5];
-
-    var circle = svg.selectAll("circle").data(data);
-
-    circle.exit().remove();
-
-    circle.attr("r", 1.5);
-
-    circle.enter().append("circle")
-    .attr("r", 2.5)
-    .merge(circle)
-    .attr("cx", function(d) { return d.x; })
-    .attr("cy", function(d) { return d.y; });
+    var data = [
+        { "name" : "Canada" },
+        { "name" : "New Zealand" }
+      ];
+      
+      var g = d3.select("svg").selectAll("g").data(data);
+      
+      var enter = g.enter().append("g")
+        .attr("transform",function(d){ 
+          return "translate("+ (Math.random() * 1100) + 40 + "," + (Math.random() * 450) + 40 +")" 
+        });
+      
+      var circle = enter.append("circle")
+        .attr("r",function(d){ return Math.random() * 100 })
+        .attr("fill",function(d,i){ return i % 2 == 0 ? "red" : "blue" });
+      
+      enter.append("text").text(function(d){ return d.name });
 });

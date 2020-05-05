@@ -31,12 +31,9 @@ $(function() {
 //this function load on the page, but will look for the button click for the id field
 $(function()
 {   var $searchName = $('#sCountry');
+    var $foundCountry = $('#foundCountry');     
 
-    $('#search-country').on('click', function() {
-
-        var $searchName = $('#sCountry');
-        var $foundCountry = $('#foundCountry');
-        
+    $('#search-country').on('click', function() {        
 
         if ($searchName.val().length != 0)
         {
@@ -58,7 +55,7 @@ $(function()
                     $('#foundHeading').text('Country Search Result');
                     $foundCountry.text('Name: ' + item.name + ', Population: ' + item.population);
                     $searchName.val('');
-                    console.log('Get: ' + ' { name: ' + item.name + ', population: ' + item.population + '}');
+                    console.log('Get: ' + ' { name: ' + item.name + ', population: ' + item.population + ' }');
                 });
             }
         }), 200;
@@ -131,7 +128,7 @@ $(function()
             success: function() {
                 var $findDeletedOne = $('#' + $countryToDelete.name.toLowerCase());
                 $findDeletedOne.text('');
-                console.log('This is the id for the one deleted: { name : ' + $countryToDelete.name + ' }');
+                console.log('Country Deleted: { name : ' + $countryToDelete.name + ' }');
                 $deleteName.val('');
             }
         }), 200;
