@@ -17,6 +17,7 @@ class User(Document):
 
 class Country(Document):
 	name = StringField()
+	population = StringField()
 
 @app.route('/')
 @app.route('/index')
@@ -30,10 +31,10 @@ def inspiration():
 	
 @app.route('/loadData')
 def loadData():
-	Country(name="New Zealand").save()
-	Country(name="Australia").save()
-	Country(name="America").save()
-	Country(name="Japan").save()
+	Country(name="New Zealand", population="100").save()
+	Country(name="Australia", population="110").save()
+	Country(name="America", population="120").save()
+	Country(name="Japan", population="130").save()
 	return "Success"
 
 @app.route('/loadcsv')
@@ -58,17 +59,18 @@ def getCountries(country_name=None):
 		country = None
 		if country_name is None:
 			for c in Country.objects:
-				countryList.append({'name' : c.name})
+				countryList.append({'name' : c.name, 'population' : c.population})
 		if country_name is not None:
 			for c in Country.objects:
 				if c.name == country_name:
-					countryList.append({'name' : c.name})
+					countryList.append({'name' : c.name, 'population' : c.population})
 		return jsonify(countryList)
 	
 	if request.method == 'POST':
-		req = request.form.get('name')
-		Country(name=req).save()
-		return req
+		reqName = request.form.get('name')
+		reqPopulation = request.form.get('population')
+		Country(name=reqName, population=reqPopulation).save()
+		return reqName
 	
 	if request.method == 'DELETE':
 		delete = request.form.get('dCountry')

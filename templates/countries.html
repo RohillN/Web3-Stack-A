@@ -1,6 +1,8 @@
 {% include "head.html" %}
 
+<header>
 {% include "navigation.html" %}
+</header>
 
     <div class="container bg-light">
        
@@ -11,6 +13,7 @@
                 <h3 class="text-center">Add Country</h3>
                 <p class="text-center"><em>Enter the country name</em></p>
                 <p>Name: <input type="text" id="name"></p>
+                <p>Population: <input type="text" id="population"></p>
                 <button id="add-country">Add Country</button>
             </div>
             <div class="col-4">
@@ -33,6 +36,12 @@
         <div class="mt-5">
             <h3 id="foundHeading"></h3>
             <p id="foundCountry"></p>
+        </div>
+
+        <div class="mt-5">
+            <svg width="1110" height="500">
+
+            </svg>
         </div>
     </div>
 {% include "footer.html" %}

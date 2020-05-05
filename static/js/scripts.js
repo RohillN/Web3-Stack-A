@@ -7,7 +7,7 @@ $(function () {
 $(function() {
 
     function addCountry(country) {
-        $country.append('<p id=' + '"' + country.name.toLowerCase() + '"' + 'class="bg-success">Name: ' + country.name +'</p>');
+        $country.append('<p id=' + '"' + country.name.toLowerCase() + '"' + 'class="bg-success">Name: ' + country.name +', Population: ' + country.population + '</p>');
     }
 
     var $country = $('#country');
@@ -31,12 +31,12 @@ $(function() {
 //this function load on the page, but will look for the button click for the id field
 $(function()
 {   var $searchName = $('#sCountry');
-    var $foundCountry = $('#foundCountry');
 
     $('#search-country').on('click', function() {
 
         var $searchName = $('#sCountry');
         var $foundCountry = $('#foundCountry');
+        
 
         if ($searchName.val().length != 0)
         {
@@ -56,10 +56,9 @@ $(function()
             success: function(found) {
                 $.each(found, function(i, item) {
                     $('#foundHeading').text('Country Search Result');
-                    $foundCountry.text('Name: ' + item.name);
+                    $foundCountry.text('Name: ' + item.name + ', Population: ' + item.population);
                     $searchName.val('');
-                    console.log('Get: ' + ' { name: ' + item.name + ' }');
-                    
+                    console.log('Get: ' + ' { name: ' + item.name + ', population: ' + item.population + '}');
                 });
             }
         }), 200;
@@ -72,13 +71,15 @@ $(function()
 function postCountry($country)
 {
     var $name = $('#name');
+    var $population = $('#population');
 
     $('#add-country').on('click', function() {
         var hasName;
-        if ($name.val().length != 0)
+        if ($name.val().length != 0 && $population.val().length != 0)
         {
             var storeCountry = {
-                "name" : $name.val() 
+                "name" : $name.val(),
+                "population" : $population.val()
             };
             hasName = true;
         }
@@ -93,10 +94,11 @@ function postCountry($country)
                 type: 'POST',
                 url: '/getcountries',
                 data: storeCountry,
-                success: function(newCountry) {
-                    $country.append('<p id=' + '"' + newCountry.toLowerCase() + '"' + 'class="bg-danger">Name: ' + newCountry +'</p>');
+                success: function() {
+                    $country.append('<p id=' + '"' + storeCountry.name.toLowerCase() + '"' + 'class="bg-danger">Name: ' + storeCountry.name + ' , Population: ' + storeCountry.population + '</p>');
                     $name.val('');
-                    console.log('Countries Post Method: { name: ' + ' ' + newCountry + ' }');
+                    $population.val('');
+                    console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , population: ' + storeCountry.population +' }');
                 }            
             }), 200;
         }
