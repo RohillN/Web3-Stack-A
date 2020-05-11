@@ -7,7 +7,7 @@ $(function () {
 $(function() {
 
     function addCountry(country) {
-        $country.append('<p id=' + '"' + country.name.toLowerCase() + '"' + 'class="bg-success">Name: ' + country.name +', Population: ' + country.population + '</p>');
+        $country.append('<p id=' + '"' + country.name.toLowerCase() + '"' + 'class="bg-success">Name: ' + country.name +', Data: ' + country.data + '</p>');
     }
 
     var $country = $('#country');
@@ -55,9 +55,9 @@ $(function()
             success: function(found) {
                 $.each(found, function(i, item) {
                     $('#foundHeading').text('Country Search Result');
-                    $foundCountry.text('Name: ' + item.name + ', Population: ' + item.population);
+                    $foundCountry.text('Name: ' + item.name + ', Data: ' + item.data);
                     $searchName.val('');
-                    console.log('Get: ' + ' { name: ' + item.name + ', population: ' + item.population + ' }');
+                    console.log('Get: ' + ' { name: ' + item.name + ', data: ' + item.data + ' }');
                 });
             }
         }), 200;
@@ -70,15 +70,14 @@ $(function()
 function postCountry($country)
 {
     var $name = $('#name');
-    var $population = $('#population');
+    //var $population = $('#population');
 
     $('#add-country').on('click', function() {
         var hasName;
-        if ($name.val().length != 0 && $population.val().length != 0)
+        if ($name.val().length != 0)
         {
             var storeCountry = {
-                "name" : $name.val(),
-                "population" : $population.val()
+                "name" : $name.val()
             };
             hasName = true;
         }
@@ -94,10 +93,10 @@ function postCountry($country)
                 url: '/getcountries',
                 data: storeCountry,
                 success: function() {
-                    $country.append('<p id=' + '"' + storeCountry.name.toLowerCase() + '"' + 'class="bg-danger">Name: ' + storeCountry.name + ' , Population: ' + storeCountry.population + '</p>');
+                    $country.append('<p id=' + '"' + storeCountry.name.toLowerCase() + '"' + 'class="bg-danger">Name: ' + storeCountry.name + ' , Data: ' + storeCountry.data + '</p>');
                     $name.val('');
                     $population.val('');
-                    console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , population: ' + storeCountry.population +' }');
+                    console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data +' }');
                 }            
             }), 200;
         }
@@ -156,7 +155,7 @@ function createCircles(data)
 
     // add a circle to each 'g'
     var circle = en.append("circle")
-        .attr("r",function(d){ return Math.random() * 75 })
+        .attr("r",function(d){ return Math.random() * 10 })
         .attr("fill",function(d,i){ return i % 2 == 0 ? "orange" : "blue" });
 
     // add a text to each 'g'
