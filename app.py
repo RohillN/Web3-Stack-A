@@ -39,7 +39,6 @@ def loadData():
 
 @app.route('/loadcsv')
 def loadCSV():
-	test = []
 	for file in os.listdir(app.config['FILES_FOLDER']):
 		filename = os.fsdecode(file)
 		path = os.path.join(app.config['FILES_FOLDER'],filename)
@@ -67,9 +66,7 @@ def loadCSV():
 				country.data = dict
 			country.save()
 
-	for c in Country.objects:
-		test.append({'NAME' : c.name, 'DICT' : c.data})
-	return jsonify(test)
+	return jsonify(Country.objects)
 
 
 

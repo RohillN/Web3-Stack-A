@@ -20,7 +20,7 @@ $(function() {
 
             $.each(data, function(i, item) {
                 addCountry(item)
-                console.log(item);
+                //console.log(item);
             });
             console.log('Countries Get Method Data Loaded');
             console.log($country);
@@ -139,10 +139,63 @@ $(function()
 
 
 function createCircles(data)
-{
+{      
+    var responseObj = data;
+    //console.log(responseObj);
+
+    //var g = d3.select("svg").selectAll("g").data(responseObj);
+
+    $.each(responseObj, function(i, item) {
+        //console.log(i + " " + item.name);
+        $.each(item.data, function(i, key) {
+            //console.log(key);
+            $.each(key, function(i, value) {
+                //console.log(key + " : " + value);
+            });
+        });
+
+    });
+
+
+    var width = 1100;
+    var height = 700;
+    var temp = [10, 15, 20, 25, 30];
+    
+    // Append SVG 
+    var svg = d3.select("svg");
+
+    // Create scale
+    var scaleX = d3.scaleLinear()
+                  .domain([d3.min(temp), d3.max(temp)])
+                  .range([0, width - 100]);
+
+    // Add scales to axis
+    var x_axis = d3.axisBottom()
+                   .scale(scaleX);
+
+    //Append group and insert axis
+    svg.append("g")
+    .attr("transform", "translate(50, 600)")
+       .call(x_axis);
+
+
+    var scaleY = d3.scaleLinear()
+    .domain([d3.min(temp), d3.max(temp)])
+    .range([height - 110, 0]);
+
+    var y_axis = d3.axisLeft()
+       .scale(scaleY);
+
+    svg.append("g")
+    .attr("transform", "translate(50, 10)")
+    .call(y_axis);
+
+
+    /*
+
     var responseObj = data;
     console.log(responseObj);
-      
+
     // a common thing is to 'wrap' some elements in a 'g' container (group)
     // this is like wrapping html elements in a container div
     var g = d3.select("svg").selectAll("g").data(responseObj);
@@ -160,4 +213,9 @@ function createCircles(data)
 
     // add a text to each 'g'
     en.append("text").text(function(d){ return d.name });
+
+    d3.select("circle").transition()
+    .style("background-color", "red");*/
+
+    
 }
