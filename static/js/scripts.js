@@ -141,7 +141,7 @@ $(function()
 function createCircles(data)
 {      
     var responseObj = data;
-    //console.log(responseObj);
+    console.log(responseObj);
 
     //var g = d3.select("svg").selectAll("g").data(responseObj);
 
@@ -189,6 +189,25 @@ function createCircles(data)
     svg.append("g")
     .attr("transform", "translate(50, 10)")
     .call(y_axis);
+
+
+    // a common thing is to 'wrap' some elements in a 'g' container (group)
+    // this is like wrapping html elements in a container div
+    var g = d3.select("svg").selectAll("g").data(responseObj);
+
+    // create new 'g' elements for each country
+    var en = g.enter().append("g")
+        .attr("transform",function(d){ 
+        return "translate("+ (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 +")" 
+    });
+
+    // add a circle to each 'g'
+    var circle = en.append("circle")
+        .attr("r",function(d){ return Math.random() * 10 })
+        .attr("fill",function(d,i){ return i % 2 == 0 ? "orange" : "blue" });
+
+    // add a text to each 'g'
+    en.append("text").text(function(d){ return d.name });
 
 
     /*

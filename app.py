@@ -28,14 +28,6 @@ def hello_world():
 @app.route('/inspiration')
 def inspiration():
 	return render_template('inspiration.html')
-	
-@app.route('/loadData')
-def loadData():
-	Country(name="New Zealand", population="100").save()
-	Country(name="Australia", population="110").save()
-	Country(name="America", population="120").save()
-	Country(name="Japan", population="130").save()
-	return "Success"
 
 @app.route('/loadcsv')
 def loadCSV():
@@ -51,12 +43,12 @@ def loadCSV():
 			for key in data: # iterate through the header keys
 				if key == "country":
 					if Country.objects(name=data[key]).count() > 0:
-						country.name = Country.objects.get(name=data[key])
+						country = Country.objects.get(name=data[key])
 						dict = country.data
 					else:
 						country.name = data[key]     
 				else:
-					f = filename.replace(".csv","") # we want to trim off the ".csv" as we can't save anything with a "." as a mongodb field name
+					f = filename.replace(".csv", "") # we want to trim off the ".csv" as we can't save anything with a "." as a mongodb field name
 					if f in dict: # check if this filename is already a field in the dict
 						dict[f][key] = data[key] # if it is, just add a new subfield which is key : data[key] (value)
 					else:
@@ -64,9 +56,11 @@ def loadCSV():
 
 				# add the data dict to the country
 				country.data = dict
+			
 			country.save()
 
-	return jsonify(Country.objects)
+	#return Country.objects.to_json()
+	return "Success"
 
 
 

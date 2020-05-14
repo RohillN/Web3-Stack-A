@@ -1,3 +1,15 @@
 Link to data file: https://www.gapminder.org/data/
 
 Data for population growth (annual percentage)
+
+
+3. Population, total (data1.csv)
+Description: Total population
+
+2. Employment rate percentage, males aged 15+ (data2.csv)
+Description: Percentage of male population, age group 15+, that has been employed during the given year
+
+3. Employment rate percentage, females aged 15+ (data3.csv)
+Description: Percentage of female population, age group 15+, that has been emplyed during the given year
+ 
+
