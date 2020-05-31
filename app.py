@@ -29,6 +29,14 @@ def hello_world():
 def inspiration():
 	return render_template('inspiration.html')
 
+@app.route('/documentation')
+def documentation():
+	return render_template('documentation.html')
+
+@app.route('/countries-two')
+def countriesTwo():
+	return render_template('countries-two.html')
+
 @app.route('/loadcsv')
 def loadCSV():
 	for file in os.listdir(app.config['FILES_FOLDER']):
@@ -72,18 +80,25 @@ def getCountries(country_name=None):
 		country = None
 		if country_name is None:
 			for c in Country.objects:
-				countryList.append({'name' : c.name, 'data' : c.data})
+				countries = Country.objects
+				return countries.to_json()
 		if country_name is not None:
-			for c in Country.objects:
-				if c.name == country_name:
-					countryList.append({'name' : c.name, 'data' : c.data})
-		return jsonify(countryList)
+			countries = Country.objects.get(name=country_name)
+			return countries.to_json()
 	
 	if request.method == 'POST':
+		newCountry = Country()
+		dict = {}
 		reqName = request.form.get('name')
 		#reqPopulation = request.form.get('population')
-		Country(name=reqName).save()
-		return reqName
+		if Country.objects(name=reqName).count() > 0:
+			newCountry = Country.objects.get(name=reqName)
+			dict = newCountry.data
+		else:
+			newCountry.name = reqName
+			newCountry.dict = dict
+		newCountry.save()
+		return newCountry.to_json()
 	
 	if request.method == 'DELETE':
 		delete = request.form.get('dCountry')
