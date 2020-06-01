@@ -102,15 +102,16 @@ def getCountries(country_name=None):
 	
 	if request.method == 'DELETE':
 		delete = request.form.get('dCountry')
+		newCountry = Country()
+		message = ""
 		if country_name is not None:
-			for c in Country.objects:
-				countryList.append({'name' : c.name, 'data' : c.data})
-				print(countryList)
-				if c.name == country_name:
-					Country.objects(name=c.name).delete()
-					countryList.remove({'name' : c.name, 'data' : c.data})
-		return jsonify(countryList)
-		
+			if Country.objects(name=country_name).count() > 0:
+				newCountry = Country.objects.get(name=country_name)
+				newCountry.delete()
+				message = "Success Deleted Country"
+			else:
+				message = "Error Invalid Country"
+		return message		
 
 @app.route('/countries')
 def viewcountry():

@@ -8,19 +8,19 @@
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="get-one-tab" data-toggle="tab" href="#get-one-api" role="tab"
-                aria-controls="get-one-api" aria-selected="true">GET ONE</a>
+                aria-controls="get-one-api" aria-selected="true">Find One Country</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="get-tab" data-toggle="tab" href="#get-api" role="tab" aria-controls="get-api"
-                aria-selected="true" onclick="">GET ALL</a>
+                aria-selected="true" onclick="getAll()">Get All Countries</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="post-tab" data-toggle="tab" href="#post-api" role="tab" aria-controls="post-api"
-                aria-selected="false">POST</a>
+                aria-selected="false">Add Country</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="delete-tab" data-toggle="tab" href="#delete-api" role="tab"
-                aria-controls="delete-api" aria-selected="false">DELETE</a>
+                aria-controls="delete-api" aria-selected="false">Delete Country</a>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -30,8 +30,8 @@
                 <div class="col-4">
                     <h3 class="text-center">Find Single Country</h3>
                     <p class="text-center"><em>Enter the country name</em></p>
-                    <p>Name: <input type="text" id="sCountry"></p>
-                    <button id="search-country" onclick="getSingleCountry()">Find Country</button>
+                    <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="sCountry"></p>
+                    <button id="search-country" class="btn btn-primary" onclick="getSingleCountry()">Find Country</button>
                 </div>
                 <div class="col-4"></div>
             </div>
@@ -50,9 +50,8 @@
                 <div class="col-4">
                     <h3 class="text-center">Add Country</h3>
                     <p class="text-center"><em>Enter the country name</em></p>
-                    <p>Name:<input type="text" name="name" id="name"></p>
-                    <!--<p>Population: <input type="text" id="population"></p>-->
-                    <button id="add-country" onclick="postCountry()">Add Country</button>
+                    <p>Name:<input class="form-control" placeholder="Country Name" type="text" name="name" id="name"></p>
+                    <button id="add-country" class="btn btn-primary" onclick="postCountry()">Add Country</button>
                 </div>
                 <div class="col-4"></div>
             </div>
@@ -60,7 +59,22 @@
                 <div id="country"></div>
             </div>
         </div>
-        <div class="tab-pane fade" id="delete-api" role="tabpanel" aria-labelledby="delete-tab">Delete</div>
+        <div class="tab-pane fade" id="delete-api" role="tabpanel" aria-labelledby="delete-tab">
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <h3 class="text-center">Delete A Country</h3>
+                    <p class="text-center"><em>Enter the country name</em></p>
+                    <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="dCountry"></p>
+                    <button id="delete-country" class="btn btn-primary" onclick="DeleteOne()">Delete Country</button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div class="mt-5">
+                <h3 id="deleteHeading"></h3>
+                <p id="deleteCountry"></p>
+            </div>
+        </div>
     </div>
 </div>
 {% include "footer.html" %}
