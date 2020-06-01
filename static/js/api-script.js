@@ -1,3 +1,4 @@
+//GET: all countries from mongodb
 function getAll() {
     $.get('/getcountries', function (data) {
         //console.log(data);
@@ -8,6 +9,7 @@ function getAll() {
         })
 };
 
+//GET: single country search
 function getSingleCountry() {
     var $searchName = $('#sCountry');
     var $foundCountry = $('#foundCountry');
@@ -30,7 +32,7 @@ function getSingleCountry() {
     }
 };
 
-
+//POST: save country entered to mongodb
 function postCountry() {
     var $name = $('#name');
     var hasName;
@@ -49,11 +51,21 @@ function postCountry() {
             console.log(data);
             $name.val('');
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
-
-        });
+            $('#addHeading').text('Country Add Status:');
+            $('#country').text("Success Country Added: " + data);
+        })
+        .fail(function(data)
+        {
+            $name.val('');
+            $('#addHeading').text('Country Add Status:');
+            console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
+            $('#country').text("Error Adding Country: " + data);
+        
+        })
     }
 };
 
+//DELETE: remove country from mongo 
 function DeleteOne() {
     var $deleteName = $('#dCountry');
     var hasName;

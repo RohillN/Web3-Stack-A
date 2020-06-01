@@ -33,9 +33,9 @@ def inspiration():
 def documentation():
 	return render_template('documentation.html')
 
-@app.route('/countries-two')
-def countriesTwo():
-	return render_template('countries-two.html')
+@app.route('/graph')
+def graph():
+	return render_template('graph.html')
 
 @app.route('/loadcsv')
 def loadCSV():
