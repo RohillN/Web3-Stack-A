@@ -1,0 +1,52 @@
+{% include "head.html" %}
+
+<header>
+{% include "navigation.html" %}
+</header>
+
+    <div class="container bg-light">
+       
+        <h1 class="text-center">Countries from MongoDB</h1>   
+        <button id="load-all-country" onclick="getAll()">LOAD ALL COUNTRIES</button>
+        <div>
+            <p id="temp-hold"></p>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <h3 class="text-center">Add Country</h3>
+                <p class="text-center"><em>Enter the country name</em></p>
+                <p>Name: <input type="text" id="name"></p>
+                <!--<p>Population: <input type="text" id="population"></p>-->
+                <button id="add-country">Add Country</button>
+            </div>
+            <div class="col-4">
+                <h3 class="text-center">Find Single Country</h3>
+                <p class="text-center"><em>Enter the country name</em></p>
+                <p>Name: <input type="text" id="sCountry"></p>
+                <button id="search-country">Find Country</button>
+            </div>
+            <div class="col-4">
+                <h3 class="text-center">Delete A Country</h3>
+                <p class="text-center"><em>Enter the country name</em></p>
+                <p>Name: <input type="text" id="dCountry"></p>
+                <button id="delete-country">Delete Country</button>
+            </div>
+        </div>
+        <hr>
+        <div class="mt-5">
+            <div id="country"></div>
+        </div>
+        <div class="mt-5">
+            <h3 id="foundHeading"></h3>
+            <p id="foundCountry"></p>
+        </div>
+
+        <hr>
+        <div>
+            <h2 class="text-center">D3 Javascript</h2>
+            <div class="mt-5 border border-dark">
+                <svg width="100%" height="700px"></svg>
+            </div>
+        </div>
+    </div>
+{% include "footer.html" %}
