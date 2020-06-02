@@ -25,55 +25,67 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="get-one-api" role="tabpanel" aria-labelledby="get-one-tab">
-            <div class="row">
-                <div class="col-4"></div>
-                <div class="col-4">
-                    <h3 class="text-center">Find Single Country</h3>
-                    <p class="text-center"><em>Enter the country name</em></p>
-                    <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="sCountry"></p>
-                    <button id="search-country" class="btn btn-primary" onclick="getSingleCountry()">Find Country</button>
+            <div class="api-block">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <h3 class="text-center">Find Single Country</h3>
+                        <p class="text-center"><em>Enter the country name</em></p>
+                        <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="sCountry"></p>
+                        <button id="search-country" class="btn btn-primary" onclick="getSingleCountry()">Find
+                            Country</button>
+                    </div>
+                    <div class="col-4"></div>
                 </div>
-                <div class="col-4"></div>
-            </div>
-            <div class="mt-5">
-                <h3 id="foundHeading"></h3>
-                <p id="foundCountry"></p>
+                <div class="mt-5">
+                    <h3 id="foundHeading"></h3>
+                    <p id="foundCountry"></p>
+                </div>
             </div>
         </div>
         <div class="tab-pane fade" id="get-api" role="tabpanel" aria-labelledby="get-tab">
-            <h2 class="text-center">Get all countries</h2>
-            <p id="temp-hold"></p>
+            <div class="api-block">
+                <h2 class="text-center">Get all countries</h2>
+                <p id="temp-hold"></p>
+            </div>
         </div>
         <div class="tab-pane fade" id="post-api" role="tabpanel" aria-labelledby="post-tab">
-            <div class="row">
-                <div class="col-4"></div>
-                <div class="col-4">
-                    <h3 class="text-center">Add Country</h3>
-                    <p class="text-center"><em>Enter the country name</em></p>
-                    <p>Name:<input class="form-control" placeholder="Country Name" type="text" name="name" id="name"></p>
-                    <button id="add-country" class="btn btn-primary" onclick="postCountry()">Add Country</button>
+            <div class="api-block">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <h3 class="text-center">Add Country</h3>
+                        <p class="text-center"><em>Enter the country name</em></p>
+                        <p>Name:<input class="form-control" placeholder="Country Name" type="text" name="name"
+                                id="name">
+                        </p>
+                        <button id="add-country" class="btn btn-primary" onclick="postCountry()">Add Country</button>
+                    </div>
+                    <div class="col-4"></div>
                 </div>
-                <div class="col-4"></div>
-            </div>
-            <div class="mt-5">
-                <h3 id="addHeading"></h3>
-                <div id="country"></div>
+                <div class="mt-5">
+                    <h3 id="addHeading"></h3>
+                    <div id="country"></div>
+                </div>
             </div>
         </div>
         <div class="tab-pane fade" id="delete-api" role="tabpanel" aria-labelledby="delete-tab">
-            <div class="row">
-                <div class="col-4"></div>
-                <div class="col-4">
-                    <h3 class="text-center">Delete A Country</h3>
-                    <p class="text-center"><em>Enter the country name</em></p>
-                    <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="dCountry"></p>
-                    <button id="delete-country" class="btn btn-primary" onclick="DeleteOne()">Delete Country</button>
+            <div class="api-block">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <h3 class="text-center">Delete A Country</h3>
+                        <p class="text-center"><em>Enter the country name</em></p>
+                        <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="dCountry"></p>
+                        <button id="delete-country" class="btn btn-primary" onclick="DeleteOne()">Delete
+                            Country</button>
+                    </div>
+                    <div class="col-4"></div>
                 </div>
-                <div class="col-4"></div>
-            </div>
-            <div class="mt-5">
-                <h3 id="deleteHeading"></h3>
-                <p id="deleteCountry"></p>
+                <div class="mt-5">
+                    <h3 id="deleteHeading"></h3>
+                    <p id="deleteCountry"></p>
+                </div>
             </div>
         </div>
     </div>

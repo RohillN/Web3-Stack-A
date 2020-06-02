@@ -1,4 +1,53 @@
+<pre class="block-code">
 <h2 class="text-center">GET API</h2>
-<h3>List Countries</h3>
-<p>GET /getcountries - List all the countries</p>
-<p>GET /getcountries/&lt;country_name&gt; - Get a specific country on name</p>
+<code>
+<h3>List All Countries</h3>
+<p><b>GET</b> /getcountries - List all the countries</p>
+<p>Example Usage<br><b>GET</b> /getcountries<br><em>returns</em></p>
+[
+    {   "_id": {"$oid": "5ed5bc020f7ba0588f332d1d"}, 
+        "name": "Afghanistan", 
+        "data": {
+                    "females_aged_15plus_employment_rate_percent": {data},
+                    "population_total": {data},
+                    "males_aged_15plus_employment_rate_percent": {data}
+                }
+    },
+    {   "_id": {"$oid": "5ed5bc020f7ba0588f332d1e"}, 
+        "name": "Albania", 
+        "data": {
+                    "females_aged_15plus_employment_rate_percent": {data},
+                    "population_total": {data},
+                    "males_aged_15plus_employment_rate_percent": {data}
+                }
+    }
+]
+</code>
+<hr>
+<code>
+<h3>Get Specific Country</h3>
+<p><b>GET</b> /getcountries/&lt;country_name&gt; - Get a specific country on name</p>
+<p>Example Usage<br><b>GET</b> /getcountries/Japan<br><em>returns</em></p>
+[
+    {   "_id": {"$oid": "5ed5bc030f7ba0588f332d6c"}, 
+        "name": "Japan", 
+        "data": {
+                    "females_aged_15plus_employment_rate_percent": {data},
+                    "population_total": {data},
+                    "males_aged_15plus_employment_rate_percent": {data}
+                }
+    }
+]
+</code>
+<hr>
+<code>
+<h4>Errors - Get Specific Country</h4>
+<p>Example Usage<br><b>GET</b> /getcountries/test<br><em>returns error data object</em></p>
+[
+    {   
+        "name": "Error", 
+        "data": {"Not Found - Please ensure country exisits."}
+    }
+]
+</code>
+</pre>
