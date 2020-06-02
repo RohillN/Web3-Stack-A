@@ -59,14 +59,6 @@ function postCountry() {
             $('#addHeading').text('Country Add Status:');
             $('#country').text("Success Country Added: " + data);
         })
-        .fail(function(data)
-        {
-            $name.val('');
-            $('#addHeading').text('Country Add Status:');
-            console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
-            $('#country').text("Error Adding Country: " + data);
-        
-        })
     }
 };
 

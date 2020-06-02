@@ -33,7 +33,7 @@ pre code {
 .api-block {
     background-color: #f7f7f7;
     padding: 20px;
-    border: 2px solid #b2b2b2;
+    border: 1px solid #b2b2b2;
     margin-bottom: 150px;
     padding-bottom: 150px;
 }
@@ -41,5 +41,5 @@ pre code {
 .block-code {
     background-color: #f7f7f7;
     padding: 20px;
-    border: 2px solid #b2b2b2;
+    border: 1px solid #b2b2b2;
 }
