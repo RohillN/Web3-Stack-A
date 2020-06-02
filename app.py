@@ -82,6 +82,9 @@ def getCountries(country_name=None):
 			for c in Country.objects:
 				countries = Country.objects
 				return countries.to_json(), 200
+			else:
+				message = "Error - no countries found. Please add a country."
+				return message, 200
 		if country_name is not None:
 			countries = Country()
 			if Country.objects(name=country_name).count() > 0:
@@ -112,14 +115,15 @@ def getCountries(country_name=None):
 			if Country.objects(name=country_name).count() > 0:
 				newCountry = Country.objects.get(name=country_name)
 				newCountry.delete()
-				message = "Success Deleted Country"
+				return newCountry.to_json(), 200
 			else:
-				message = "Error Invalid Country"
-		return message, 200
+				newCountry.name = "Error"
+				newCountry.data = "Not Found - Please ensure country exisits."
+				return newCountry.to_json(), 200
 
 @app.route('/countries')
 def viewcountry():
-	return render_template('/countries.html')
+	return render_template('/countries.html'), 200
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)

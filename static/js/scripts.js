@@ -8,8 +8,8 @@ function getAll() {
         //console.log(data);
         $('#temp-hold').text(data);
     })
-        .fail(function () {
-            $('#temp-hold').text("Error No Countries Found");
+        .fail(function (data) {
+            $('#temp-hold').text(data);
         })
 };
 
@@ -83,16 +83,11 @@ function DeleteOne() {
             url: '/getcountries/' + $countryToDelete.name,
             success: function (data) {
                 console.log('User input delete: { name : ' + $countryToDelete.name + ' }');
+                $('#deleteHeading').text('Country Delete Status');
+                $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data);
                 $deleteName.val('');
-                $('#deleteHeading').text('Country to be deleted:');
-                $('#deleteCountry').text(data + ": " + $countryToDelete.name);
             }
         })
-            .fail(function (data) {
-                $('#deleteHeading').text('Country to be deleted:');
-                $('#deleteCountry').text(data + ": " + $countryToDelete.name);
-                $deleteName.val('');
-            })
     }
 }
 

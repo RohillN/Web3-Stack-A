@@ -26,8 +26,9 @@
 <hr>
 <code>
 <h3>Get Specific Country</h3>
+<p><b>Overview</b><br>- Country name is case sensitive. (country name must be exactly the same as the name in the database)<br>- Both success and error of deletion will return an object.</p>
 <p><b>GET</b> /getcountries/&lt;country_name&gt; - Get a specific country on name</p>
-<p>Example Usage<br><b>GET</b> /getcountries/Japan<br><em>returns</em></p>
+<p>Example Usage<br><b>GET</b> /getcountries/<b>Japan</b><br><em>returns</em></p>
 [
     {   "_id": {"$oid": "5ed5bc030f7ba0588f332d6c"}, 
         "name": "Japan", 
@@ -41,8 +42,14 @@
 </code>
 <hr>
 <code>
+    <h4>Errors - List All Countries</h4>
+    <p>If no countries are in database, then return a message.<br>Example Usage<br><b>GET</b> /getcountries<br><em>returns message</em></p>
+    "Error - no countries found. Please add a country."
+    </code>
+<hr>
+<code>
 <h4>Errors - Get Specific Country</h4>
-<p>Example Usage<br><b>GET</b> /getcountries/test<br><em>returns error data object</em></p>
+<p>Example Usage<br><b>GET</b> /getcountries/<b>test</b><br><em>returns error data object</em></p>
 [
     {   
         "name": "Error", 

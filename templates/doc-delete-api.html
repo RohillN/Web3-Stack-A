@@ -1,0 +1,31 @@
+<pre class="block-code">
+    <code>
+        <h2 class="text-center">DELETE API</h2>
+        <h3>Delete Specific Country</h3>
+        <p><b>DELETE</b> /getcountries/&lt;country_name&gt; - Delete a specific country on name</p>
+        <p><b>Overview</b><br>- Delete country on name input from form and return country name to delete.<br>- Country name is case sensitive. (country name must be exactly the same as the name in the database)<br>- Both success and error of deletion will return an object.</p>
+        <p>Example Usage<br><b>DELETE</b> /getcountries/<b>Japan</b><br><em>returns country object begin deleted</em></p>
+[
+    {   
+        "_id": {"$oid": "5ed5bc030f7ba0588f332d6c"}, 
+        "name": "Japan", 
+        "data": {
+                    "females_aged_15plus_employment_rate_percent": {data},
+                    "population_total": {data},
+                    "males_aged_15plus_employment_rate_percent": {data}
+                }
+    }
+]
+    </code>
+    <hr>
+    <code>
+        <h4>Errors - Delete Specific Country</h4>
+        <p>Example Usage<br><b>GET</b> /getcountries/<b>test</b><br><em>returns error data object</em></p>
+[
+    {   
+        "name": "Error", 
+        "data": {"Not Found - Please ensure country exisits."}
+    }
+]
+    </code>
+</pre>
