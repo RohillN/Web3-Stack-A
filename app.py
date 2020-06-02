@@ -29,6 +29,14 @@ def hello_world():
 def inspiration():
 	return render_template('inspiration.html')
 
+@app.route('/documentation')
+def documentation():
+	return render_template('documentation.html')
+
+@app.route('/graph')
+def graph():
+	return render_template('graph.html')
+
 @app.route('/loadcsv')
 def loadCSV():
 	for file in os.listdir(app.config['FILES_FOLDER']):
@@ -72,34 +80,50 @@ def getCountries(country_name=None):
 		country = None
 		if country_name is None:
 			for c in Country.objects:
-				countryList.append({'name' : c.name, 'data' : c.data})
+				countries = Country.objects
+				return countries.to_json(), 200
+			else:
+				message = "Error - no countries found. Please add a country."
+				return message, 200
 		if country_name is not None:
-			for c in Country.objects:
-				if c.name == country_name:
-					countryList.append({'name' : c.name, 'data' : c.data})
-		return jsonify(countryList)
+			countries = Country()
+			if Country.objects(name=country_name).count() > 0:
+				countries = Country.objects.get(name=country_name)
+			else:
+				countries.name = "Error"
+				countries.data = "Not Found - Please ensure country exisits."
+			return countries.to_json(), 200
 	
 	if request.method == 'POST':
+		newCountry = Country()
+		dict = {}
 		reqName = request.form.get('name')
-		#reqPopulation = request.form.get('population')
-		Country(name=reqName).save()
-		return reqName
+		if Country.objects(name=reqName).count() > 0:
+			newCountry = Country.objects.get(name=reqName)
+			dict = newCountry.data
+		else:
+			newCountry.name = reqName
+			newCountry.dict = dict
+		newCountry.save()
+		return newCountry.to_json(), 200
 	
 	if request.method == 'DELETE':
 		delete = request.form.get('dCountry')
+		newCountry = Country()
+		message = ""
 		if country_name is not None:
-			for c in Country.objects:
-				countryList.append({'name' : c.name, 'data' : c.data})
-				print(countryList)
-				if c.name == country_name:
-					Country.objects(name=c.name).delete()
-					countryList.remove({'name' : c.name, 'data' : c.data})
-		return jsonify(countryList)
-		
+			if Country.objects(name=country_name).count() > 0:
+				newCountry = Country.objects.get(name=country_name)
+				newCountry.delete()
+				return newCountry.to_json(), 200
+			else:
+				newCountry.name = "Error"
+				newCountry.data = "Not Found - Please ensure country exisits."
+				return newCountry.to_json(), 200
 
 @app.route('/countries')
 def viewcountry():
-	return render_template('/countries.html')
+	return render_template('/countries.html'), 200
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)
