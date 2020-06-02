@@ -1,0 +1,60 @@
+<pre class="block-code">
+<h2 class="text-center">GET API</h2>
+<code>
+<h3>List All Countries</h3>
+<p><b>GET</b> /getcountries - List all the countries</p>
+<p>Example Usage<br><b>GET</b> /getcountries<br><em>returns</em></p>
+[
+    {   "_id": {"$oid": "5ed5bc020f7ba0588f332d1d"}, 
+        "name": "Afghanistan", 
+        "data": {
+                    "females_aged_15plus_employment_rate_percent": {data},
+                    "population_total": {data},
+                    "males_aged_15plus_employment_rate_percent": {data}
+                }
+    },
+    {   "_id": {"$oid": "5ed5bc020f7ba0588f332d1e"}, 
+        "name": "Albania", 
+        "data": {
+                    "females_aged_15plus_employment_rate_percent": {data},
+                    "population_total": {data},
+                    "males_aged_15plus_employment_rate_percent": {data}
+                }
+    }
+]
+</code>
+<hr>
+<code>
+<h3>Get Specific Country</h3>
+<p><b>Overview</b><br>- Country name is case sensitive. (country name must be exactly the same as the name in the database)<br>- Both success and error of deletion will return an object.</p>
+<p><b>GET</b> /getcountries/&lt;country_name&gt; - Get a specific country on name</p>
+<p>Example Usage<br><b>GET</b> /getcountries/<b>Japan</b><br><em>returns</em></p>
+[
+    {   "_id": {"$oid": "5ed5bc030f7ba0588f332d6c"}, 
+        "name": "Japan", 
+        "data": {
+                    "females_aged_15plus_employment_rate_percent": {data},
+                    "population_total": {data},
+                    "males_aged_15plus_employment_rate_percent": {data}
+                }
+    }
+]
+</code>
+<hr>
+<code>
+    <h4>Errors - List All Countries</h4>
+    <p>If no countries are in database, then return a message.<br>Example Usage<br><b>GET</b> /getcountries<br><em>returns message</em></p>
+    "Error - no countries found. Please add a country."
+    </code>
+<hr>
+<code>
+<h4>Errors - Get Specific Country</h4>
+<p>Example Usage<br><b>GET</b> /getcountries/<b>test</b><br><em>returns error data object</em></p>
+[
+    {   
+        "name": "Error", 
+        "data": {"Not Found - Please ensure country exisits."}
+    }
+]
+</code>
+</pre>

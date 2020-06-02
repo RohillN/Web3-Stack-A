@@ -18,3 +18,28 @@ header {
 .img-resize {
     width: 100%;
 }
+
+pre {
+    display: block;
+    color: black;
+}
+
+pre code {
+    font-size: inherit;
+    color: inherit;
+    word-break: normal;
+}
+
+.api-block {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border: 1px solid #b2b2b2;
+    margin-bottom: 150px;
+    padding-bottom: 150px;
+}
+
+.block-code {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border: 1px solid #b2b2b2;
+}

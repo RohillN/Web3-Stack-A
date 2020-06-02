@@ -1,49 +1,93 @@
 {% include "head.html" %}
 
 <header>
-{% include "navigation.html" %}
+    {% include "navigation.html" %}
 </header>
-
-    <div class="container bg-light">
-       
-        <h1 class="text-center">Countries from MongoDB</h1>   
-
-        <div class="row">
-            <div class="col-4">
-                <h3 class="text-center">Add Country</h3>
-                <p class="text-center"><em>Enter the country name</em></p>
-                <p>Name: <input type="text" id="name"></p>
-                <!--<p>Population: <input type="text" id="population"></p>-->
-                <button id="add-country">Add Country</button>
-            </div>
-            <div class="col-4">
-                <h3 class="text-center">Find Single Country</h3>
-                <p class="text-center"><em>Enter the country name</em></p>
-                <p>Name: <input type="text" id="sCountry"></p>
-                <button id="search-country">Find Country</button>
-            </div>
-            <div class="col-4">
-                <h3 class="text-center">Delete A Country</h3>
-                <p class="text-center"><em>Enter the country name</em></p>
-                <p>Name: <input type="text" id="dCountry"></p>
-                <button id="delete-country">Delete Country</button>
+<div class="container">
+    <h1 class="text-center">Countries</h1>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="get-one-tab" data-toggle="tab" href="#get-one-api" role="tab"
+                aria-controls="get-one-api" aria-selected="true">Find One Country</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="get-tab" data-toggle="tab" href="#get-api" role="tab" aria-controls="get-api"
+                aria-selected="true" onclick="getAll()">Get All Countries</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="post-tab" data-toggle="tab" href="#post-api" role="tab" aria-controls="post-api"
+                aria-selected="false">Add Country</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="delete-tab" data-toggle="tab" href="#delete-api" role="tab"
+                aria-controls="delete-api" aria-selected="false">Delete Country</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="get-one-api" role="tabpanel" aria-labelledby="get-one-tab">
+            <div class="api-block">
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6">
+                        <h3 class="text-center">Find Single Country</h3>
+                        <p class="text-center"><em>Enter the country name</em></p>
+                        <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="sCountry"></p>
+                        <button id="search-country" class="btn btn-primary" onclick="getSingleCountry()">Find
+                            Country</button>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+                <div class="mt-5">
+                    <h3 id="foundHeading"></h3>
+                    <p id="foundCountry"></p>
+                </div>
             </div>
         </div>
-        <hr>
-        <div class="mt-5">
-            <div id="country"></div>
+        <div class="tab-pane fade" id="get-api" role="tabpanel" aria-labelledby="get-tab">
+            <div class="api-block">
+                <h2 class="text-center">Get all countries</h2>
+                <p id="temp-hold"></p>
+            </div>
         </div>
-        <div class="mt-5">
-            <h3 id="foundHeading"></h3>
-            <p id="foundCountry"></p>
+        <div class="tab-pane fade" id="post-api" role="tabpanel" aria-labelledby="post-tab">
+            <div class="api-block">
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6">
+                        <h3 class="text-center">Add Country</h3>
+                        <p class="text-center"><em>Enter the country name</em></p>
+                        <p>Name:<input class="form-control" placeholder="Country Name" type="text" name="name"
+                                id="name">
+                        </p>
+                        <button id="add-country" class="btn btn-primary" onclick="postCountry()">Add Country</button>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+                <div class="mt-5">
+                    <h3 id="addHeading"></h3>
+                    <div id="country"></div>
+                </div>
+            </div>
         </div>
-
-        <hr>
-        <div>
-            <h2 class="text-center">D3 Javascript</h2>
-            <div class="mt-5 border border-dark">
-                <svg width="100%" height="700px"></svg>
+        <div class="tab-pane fade" id="delete-api" role="tabpanel" aria-labelledby="delete-tab">
+            <div class="api-block">
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6">
+                        <h3 class="text-center">Delete A Country</h3>
+                        <p class="text-center"><em>Enter the country name</em></p>
+                        <p>Name: <input class="form-control" placeholder="Country Name" type="text" id="dCountry"></p>
+                        <button id="delete-country" class="btn btn-primary" onclick="DeleteOne()">Delete
+                            Country</button>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+                <div class="mt-5">
+                    <h3 id="deleteHeading"></h3>
+                    <p id="deleteCountry"></p>
+                </div>
             </div>
         </div>
     </div>
+</div>
 {% include "footer.html" %}
