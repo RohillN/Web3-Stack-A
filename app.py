@@ -90,7 +90,7 @@ def getCountries(country_name=None):
 				countries = Country.objects.get(name=country_name)
 				return countries.to_json(), 200
 			else:
-				message = "Error - no countries found. Please add a country."
+				message = "Error - no country found. Please add a country."
 				return message, 404
 	
 	if request.method == 'POST':

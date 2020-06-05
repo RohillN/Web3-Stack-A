@@ -10,7 +10,8 @@ function getAll() {
     }).fail(function (xhr, ajaxOptions, thrownError) {
         if (xhr.status == 404) {
             console.log(xhr.responseText);
-            $('#temp-hold').text(xhr.responseText);
+            //$('#temp-hold').text(xhr.responseText);
+            $('#temp-hold').text("Error - no countries found. Please add a country.");
         }
     });
 };
@@ -29,7 +30,8 @@ function getSingleCountry() {
         }).fail(function (xhr, ajaxOptions, thrownError) {
             if (xhr.status == 404) {
                 $('#foundHeading').text('Country Search Result');
-                $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + xhr.responseText);
+                //$foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + xhr.responseText);
+                $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + "Error - no country found. Please add a country.");
                 $searchName.val('');
                 console.log(xhr.responseText);
             }
@@ -64,10 +66,10 @@ function postCountry() {
         })
         .fail(function (xhr, ajaxOptions, thrownError) {
             if (xhr.status == 409) {
-                console.log(xhr.responseText);
                 $('#addHeading').text('Country Add Status');
-                $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + xhr.responseText);
+                //$('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + xhr.responseText);
                 console.log(xhr.responseText);
+                $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + "Error - country already exists. Please add a country.");
             }
         })
     }
@@ -102,7 +104,8 @@ function postCountry() {
                 if (xhr.status == 404) {
                     console.log(xhr.responseText);
                     $('#deleteHeading').text('Country Delete Status');
-                    $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + xhr.responseText);
+                    //$('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + xhr.responseText);
+                    $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + "Error - Country does not exists in database. Please try another country.");
                     $deleteName.val('');
                 }
             })
