@@ -5,12 +5,12 @@ $(function () {
 //GET: all countries from mongodb
 function getAll() {
     $.get('/getcountries', function (data) {
-        //console.log(data);
+        console.log(data);
         $('#temp-hold').text(data);
+    }).fail(function (data) {
+        $('#temp-hold').text(data.responseText);
+        console.log(data.responseText);
     })
-        .fail(function (data) {
-            $('#temp-hold').text(data);
-        })
 };
 
 //GET: single country search
@@ -22,14 +22,14 @@ function getSingleCountry() {
         $.get('/getcountries/' + $searchName.val(), function (data) {
             console.log(data);
             $('#foundHeading').text('Country Search Result');
-            $foundCountry.html("Search Input: " + $searchName.val()+ "<br><br>" + data);
+            $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data);
             $searchName.val('');
         })
-            .fail(function () 
-            {
+            .fail(function (data) {
                 $('#foundHeading').text('Country Search Result');
-                $foundCountry.html("Search Input: " + $searchName.val());
+                $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data.responseText);
                 $searchName.val('');
+                console.log(data.responseText);
             })
     }
     else {
@@ -56,8 +56,12 @@ function postCountry() {
             console.log(data);
             $name.val('');
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
-            $('#addHeading').text('Country Add Status:');
-            $('#country').text("Success Country Added: " + data);
+            $('#addHeading').text('Country Add Status');
+            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Success Country Added: " + data);
+        }).fail(function(data){
+            $('#addHeading').text('Country Add Status');
+            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + data.responseText);
+            console.log(data.responseText);
         })
     }
 };
@@ -87,14 +91,17 @@ function DeleteOne() {
                 $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data);
                 $deleteName.val('');
             }
+        }).fail(function(data){
+            console.log(data.responseText);
+            $('#deleteHeading').text('Country Delete Status');
+            $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data.responseText);
+            $deleteName.val('');
         })
     }
 };
 
-function createGraph()
-{
-    $.get('/getcountries', function (data) 
-    {
+function createGraph() {
+    $.get('/getcountries', function (data) {
         var responseObj = JSON.parse(data);
         console.log(responseObj);
 
@@ -104,25 +111,24 @@ function createGraph()
 
         // create new 'g' elements for each country
         var en = g.enter().append("g")
-            .attr("transform",function(d){ 
-            return "translate("+ (Math.random() * 1100) + 50 + "," + (Math.random() * 680) + 50 +")" 
-        });
+            .attr("transform", function (d) {
+                return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 680) + 50 + ")"
+            });
 
         // add a circle to each 'g'
         var circle = en.append("circle")
-            .attr("r",function(d){ return Math.random() * 50 })
-            .attr("fill",function(d,i){ return i % 2 == 0 ? "orange" : "blue" });
+            .attr("r", function (d) { return Math.random() * 50 })
+            .attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
 
         // add a text to each 'g'
-        en.append("text").text(function(d){ return d.name });
+        en.append("text").text(function (d) { return d.name });
 
         d3.select("circle").transition()
-        .style("background-color", "red");
+            .style("background-color", "red");
     })
 };
 
-function createCircles() 
-{
+function createCircles() {
     populationYear = [];
     populationCount = [];
     //var g = d3.select("svg").selectAll("g").data(responseObj);
