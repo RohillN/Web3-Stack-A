@@ -7,10 +7,9 @@ function getAll() {
     $.get('/getcountries', function (data) {
         console.log(data);
         $('#temp-hold').text(data);
-    }).fail(function () {
-
-        //$('#temp-hold').text(xhr.responseText);
-        $('#temp-hold').text("Error - no countries found. Please add a country.");
+    }).fail(function (data) {
+        console.log(data);
+        $('#temp-hold').text(data);
 
     });
 };
@@ -26,14 +25,12 @@ function getSingleCountry() {
             $('#foundHeading').text('Country Search Result');
             $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data);
             $searchName.val('');
-        }).fail(function (xhr, ajaxOptions, thrownError) {
-            if (xhr.status == 404) {
-                $('#foundHeading').text('Country Search Result');
-                //$foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + xhr.responseText);
-                $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + "Error - no country found. Please add a country.");
-                $searchName.val('');
-                console.log(xhr.responseText);
-            }
+        }).fail(function (data) {
+            $('#foundHeading').text('Country Search Result');
+            $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data);
+            $searchName.val('');
+            console.log(data);
+
         })
     }
     else {
@@ -62,15 +59,11 @@ function postCountry() {
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
             $('#addHeading').text('Country Add Status');
             $('#country').html("Add Input: " + storeCountry.name + "<br><br>Success Country Added: " + data);
+        }).fail(function (data) {
+            $('#addHeading').text('Country Add Status');
+            console.log(data);
+            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + data);
         })
-            .fail(function (xhr, ajaxOptions, thrownError) {
-                if (xhr.status == 409) {
-                    $('#addHeading').text('Country Add Status');
-                    //$('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + xhr.responseText);
-                    console.log(xhr.responseText);
-                    $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + "Error - country already exists. Please add a country.");
-                }
-            })
     }
 }
 
@@ -99,14 +92,11 @@ function DeleteOne() {
                 $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data);
                 $deleteName.val('');
             }
-        }).fail(function (xhr, ajaxOptions, thrownError) {
-            if (xhr.status == 404) {
-                console.log(xhr.responseText);
-                $('#deleteHeading').text('Country Delete Status');
-                //$('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + xhr.responseText);
-                $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + "Error - Country does not exists in database. Please try another country.");
-                $deleteName.val('');
-            }
+        }).fail(function (data) {
+            console.log(data);
+            $('#deleteHeading').text('Country Delete Status');
+            $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data);
+            $deleteName.val('');
         })
     }
 };

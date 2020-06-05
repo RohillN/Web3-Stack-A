@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify
+from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify, Response
 from mongoengine import *
 import os
 import json
@@ -83,7 +83,7 @@ def getCountries(country_name=None):
 				return countries.to_json(), 200
 			else:
 				message = "Error - no countries found. Please add a country."
-				return message, 404
+				return message
 		if country_name is not None:
 			countries = Country()
 			if Country.objects(name=country_name).count() > 0:
@@ -91,7 +91,7 @@ def getCountries(country_name=None):
 				return countries.to_json(), 200
 			else:
 				message = "Error - no country found. Please add a country."
-				return message, 404
+				return message
 	
 	if request.method == 'POST':
 		newCountry = Country()
@@ -101,7 +101,7 @@ def getCountries(country_name=None):
 			# newCountry = Country.objects.get(name=reqName)
 			# dict = newCountry.data
 			message = "Error - Country already exists in database. Please add another country."
-			return message, 409
+			return message
 		else:
 			newCountry.name = reqName
 			newCountry.data = dict
@@ -119,7 +119,7 @@ def getCountries(country_name=None):
 				return newCountry.to_json(), 200
 			else:
 				message = "Error - Country does not exists in database. Please try another country."
-				return message, 404
+				return message
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)
