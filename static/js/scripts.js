@@ -61,15 +61,17 @@ function postCountry() {
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
             $('#addHeading').text('Country Add Status');
             $('#country').html("Add Input: " + storeCountry.name + "<br><br>Success Country Added: " + data);
-        }).fail(function (xhr, ajaxOptions, thrownError) {
+        })
+        .fail(function (xhr, ajaxOptions, thrownError) {
             if (xhr.status == 409) {
                 console.log(xhr.responseText);
                 $('#addHeading').text('Country Add Status');
                 $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + xhr.responseText);
                 console.log(xhr.responseText);
             }
-        }
-};
+        })
+    }
+}
 
     //DELETE: remove country from mongo 
     function DeleteOne() {
