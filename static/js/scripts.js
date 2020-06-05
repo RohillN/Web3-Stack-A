@@ -7,10 +7,10 @@ function getAll() {
     $.get('/getcountries', function (data) {
         console.log(data);
         $('#temp-hold').text(data);
-    }).fail(function (data) {
-        $('#temp-hold').text(data.responseText);
-        console.log(data.responseText);
-    })
+    }).fail(function (xhr, ajaxOptions, thrownError) {
+        console.log(xhr.responseText);
+        $('#temp-hold').text(xhr.responseText);
+    });
 };
 
 //GET: single country search
@@ -24,13 +24,12 @@ function getSingleCountry() {
             $('#foundHeading').text('Country Search Result');
             $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data);
             $searchName.val('');
+        }).fail(function (xhr, ajaxOptions, thrownError) {
+            $('#foundHeading').text('Country Search Result');
+            $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + xhr.responseText);
+            $searchName.val('');
+            console.log(xhr.responseText);
         })
-            .fail(function (data) {
-                $('#foundHeading').text('Country Search Result');
-                $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data.responseText);
-                $searchName.val('');
-                console.log(data.responseText);
-            })
     }
     else {
         alert('Invalid Input, Please Try Again');
@@ -58,10 +57,10 @@ function postCountry() {
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
             $('#addHeading').text('Country Add Status');
             $('#country').html("Add Input: " + storeCountry.name + "<br><br>Success Country Added: " + data);
-        }).fail(function(data){
+        }).fail(function (xhr, ajaxOptions, thrownError) {
             $('#addHeading').text('Country Add Status');
-            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + data.responseText);
-            console.log(data.responseText);
+            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + xhr.responseText);
+            console.log(xhr.responseText);
         })
     }
 };
@@ -91,10 +90,10 @@ function DeleteOne() {
                 $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data);
                 $deleteName.val('');
             }
-        }).fail(function(data){
-            console.log(data.responseText);
+        }).fail(function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.responseText);
             $('#deleteHeading').text('Country Delete Status');
-            $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data.responseText);
+            $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + xhr.responseText);
             $deleteName.val('');
         })
     }
