@@ -9,7 +9,7 @@ function getAll() {
         $('#temp-hold').text(data);
     }).fail(function (data) {
         console.log(data);
-        $('#temp-hold').text(data);
+        $('#temp-hold').text(data.status + " " + data.responseText);
 
     });
 };

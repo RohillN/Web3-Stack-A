@@ -69,6 +69,11 @@ def loadCSV():
 	#return Country.objects.to_json()
 	return "Success", 200
 
+@app.route('/droptable')
+def droptables():
+	Country.drop_collection()
+	return "Success, Countries Tables Dropped", 200
+
 
 
 @app.route('/getcountries', methods=['GET', 'POST'])
@@ -83,7 +88,7 @@ def getCountries(country_name=None):
 				return countries.to_json(), 200
 			else:
 				message = "Error - no countries found. Please add a country."
-				return message
+				return message, 404
 		if country_name is not None:
 			countries = Country()
 			if Country.objects(name=country_name).count() > 0:
