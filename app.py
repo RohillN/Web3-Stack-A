@@ -124,7 +124,7 @@ def getCountries(country_name=None):
 				return newCountry.to_json(), 200
 			else:
 				message = "Error - Country does not exists in database. Please try another country."
-				return message, 409
+				return message, 404
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)
