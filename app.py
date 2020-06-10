@@ -96,7 +96,7 @@ def getCountries(country_name=None):
 				return countries.to_json(), 200
 			else:
 				message = "Error - no country found. Please add a country."
-				return message
+				return message, 404
 	
 	if request.method == 'POST':
 		newCountry = Country()
@@ -106,7 +106,7 @@ def getCountries(country_name=None):
 			# newCountry = Country.objects.get(name=reqName)
 			# dict = newCountry.data
 			message = "Error - Country already exists in database. Please add another country."
-			return message
+			return message, 409
 		else:
 			newCountry.name = reqName
 			newCountry.data = dict
@@ -124,7 +124,7 @@ def getCountries(country_name=None):
 				return newCountry.to_json(), 200
 			else:
 				message = "Error - Country does not exists in database. Please try another country."
-				return message
+				return message, 409
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)

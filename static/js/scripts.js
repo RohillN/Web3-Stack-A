@@ -7,10 +7,10 @@ function getAll() {
     $.get('/getcountries', function (data) {
         console.log(data);
         $('#temp-hold').text(data);
-    }).fail(function (data) {
+    })
+    .fail(function(data) { 
         console.log(data);
-        $('#temp-hold').text(data.status + " " + data.responseText);
-
+        $('#temp-hold').text(data.responseText);
     });
 };
 
@@ -27,7 +27,7 @@ function getSingleCountry() {
             $searchName.val('');
         }).fail(function (data) {
             $('#foundHeading').text('Country Search Result');
-            $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data);
+            $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data.responseText);
             $searchName.val('');
             console.log(data);
 
@@ -62,7 +62,7 @@ function postCountry() {
         }).fail(function (data) {
             $('#addHeading').text('Country Add Status');
             console.log(data);
-            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + data);
+            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + data.responseText);
         })
     }
 }
@@ -95,7 +95,7 @@ function DeleteOne() {
         }).fail(function (data) {
             console.log(data);
             $('#deleteHeading').text('Country Delete Status');
-            $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data);
+            $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data.responseText);
             $deleteName.val('');
         })
     }
