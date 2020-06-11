@@ -8,10 +8,10 @@ function getAll() {
         console.log(data);
         $('#temp-hold').text(data);
     })
-    .fail(function(data) { 
-        console.log(data);
-        $('#temp-hold').text(data.responseText);
-    });
+        .fail(function (data) {
+            console.log(data);
+            $('#temp-hold').text(data.responseText);
+        });
 };
 
 //GET: single country search
@@ -54,7 +54,7 @@ function postCountry() {
     }
     if (hasName) {
         $.post(('/getcountries'), storeCountry, function (data) {
-            console.log(data);storeCountry
+            console.log(data); storeCountry
             $name.val('');
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
             $('#addHeading').text('Country Add Status');
@@ -105,121 +105,81 @@ function createCircles() {
     $.get('/getcountries', function (data) {
         let responseObj = JSON.parse(data);
         //console.log(responseObj);
-        createAxis(responseObj);
+        sortAxisData(responseObj);
 
-        // a common thing is to 'wrap' some elements in a 'g' container (group)
-        // this is like wrapping html elements in a container div
-        let g = d3.select("svg").selectAll("g").data(responseObj);
+        // // a common thing is to 'wrap' some elements in a 'g' container (group)
+        // // this is like wrapping html elements in a container div
+        // let g = d3.select("svg").selectAll("g").data(responseObj);
 
-        // create new 'g' elements for each country
-        let en = g.enter().append("g")
-            .attr("transform", function (d) {
-                return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 680) + 50 + ")"
-            });
+        // // create new 'g' elements for each country
+        // let en = g.enter().append("g")
+        //     .attr("transform", function (d) {
+        //         return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 680) + 50 + ")"
+        //     });
 
-        // add a circle to each 'g'
-        let circle = en.append("circle")
-            .attr("r", function (d) { return Math.random() * 50 })
-            .attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
+        // // add a circle to each 'g'
+        // let circle = en.append("circle")
+        //     .attr("r", function (d) { return Math.random() * 50 })
+        //     .attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
 
-        // add a text to each 'g'
-        en.append("text").text(function (d) { return d.name });
+        // // add a text to each 'g'
+        // en.append("text").text(function (d) { return d.name });
 
-        d3.select("circle").transition()
-            .style("background-color", "red");
+        // d3.select("circle").transition()
+        //     .style("background-color", "red");
     })
 };
 
-function createAxis(data)
-{
-    let hold = [];
-    hold.push(data);
-    console.log(hold);
-    $.each(hold, function (i, item) {
-        console.log(item);
-        $.each(item, function (j, key) {
-            console.log(key);
-            if (i == "population_total") {
-                //console.log(i);
-                $.each(key, function (i, value) {
-                    //console.log(key + " : " + value);
-                });
-            }
-        });
-
-    });
-}
-
-function createAxisDraft() {
+function sortAxisData(res) {
     populationYear = [];
     populationCount = [];
-    //let g = d3.select("svg").selectAll("g").data(responseObj);
-    console.log("Start for each loop");
-    $.each(responseObj, function (i, item) {
-        //console.log(item);
-        $.each(item.data, function (i, key) {
-            //each data set, eg.... 
-            //female_employment_rate, male_employment_rate, population
-            //console.log(key);
-            if (i == "population_total") {
-                //console.log(i);
-                $.each(key, function (i, value) {
-                    //console.log(key + " : " + value);
+    holdPopulation = [];
+    let min;
+    let max;
+    let noMatch = false;
+    // console.log(data[0]);
+    console.log(res);
+    $.each(res, function (i, item) {
+        $.each(item.data, function (j, value) {
+            if (j == "population_total") {
+                $.each(value, function (year, pop) {
+                    let exists = true;
+                    exists = populationYear.includes(year);
+                    if (exists == false) {
+                        populationYear.push(year);
+                    }
+                    populationCount.push(pop);
                 });
             }
         });
-
     });
+    createAxis(populationYear, populationCount)
+}
 
-    //population total first record
-    //getting year - it is a constant over all countries
-    //popluation number - currently only first records number - need to get min max of all population number and divide by millions to get even spread.
-    let populationFirst = responseObj[0];
-    //console.log(populationFirst.name);
-    $.each(populationFirst.data, function (i, item) {
-        if (i == "population_total") {
-            //console.log(i);
-            $.each(item, function (j, key) {
-                //console.log(i);
-
-                populationYear[j] = j;
-                populationCount[key] = key;
-                //console.log(key);
-                //console.log(temp);
-
-            });
-            //console.log(temp);
-        }
-        //console.log(key + " : " + value);
-    });
-
-    for (i = 0; i < populationYear.length; i++) {
-        //console.log(populationYear[i]);
-        //console.log(populationCount[i]);
-    }
-    console.log("End for each loop");
-
-
+function createAxis(year, value) {
+    let populationYear = year;
+    let populationCount = value;
     let width = 1100;
-    let height = 700;
-    //let temp = [10, 15, 20, 25, 30];
+    let height = 690;
 
     // Append SVG 
     let svg = d3.select("svg");
 
     // Create scale X
     let scaleX = d3.scaleLinear()
-        .domain([d3.max(populationCount), d3.min(populationCount)])
+        .domain([0, d3.max(populationCount)])
         .range([0, width - 100]);
 
     // Create scale Y
     let scaleY = d3.scaleLinear()
-        .domain([d3.max(populationYear), d3.min(populationYear)])
+        .domain([d3.max(populationYear), 0])
         .range([0, height - 100]);
 
     // Add scales to x axis
     let x_axis = d3.axisBottom()
-        .scale(scaleX);
+        .scale(scaleX)
+        .ticks(20)
+        .tickFormat(d3.format(".2s"));
 
     // Add scale to y axis
     let y_axis = d3.axisLeft()
@@ -234,7 +194,9 @@ function createAxisDraft() {
     svg.append("g")
         .attr("transform", "translate(90, 10)")
         .call(y_axis);
+}
 
+function DrawCirclesDraft() {
     let bar1 = svg.append("circle")
         .attr("fill", "blue")
         .attr("transform", function (d) {
@@ -266,31 +228,4 @@ function createAxisDraft() {
             .attr("r", 150)
     }
     update();
-
-
-    /*
- 
-    let responseObj = data;
-    console.log(responseObj);
- 
-    // a common thing is to 'wrap' some elements in a 'g' container (group)
-    // this is like wrapping html elements in a container div
-    let g = d3.select("svg").selectAll("g").data(responseObj);
- 
-    // create new 'g' elements for each country
-    let en = g.enter().append("g")
-        .attr("transform",function(d){ 
-        return "translate("+ (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 +")" 
-    });
- 
-    // add a circle to each 'g'
-    let circle = en.append("circle")
-        .attr("r",function(d){ return Math.random() * 10 })
-        .attr("fill",function(d,i){ return i % 2 == 0 ? "orange" : "blue" });
- 
-    // add a text to each 'g'
-    en.append("text").text(function(d){ return d.name });
- 
-    d3.select("circle").transition()
-    .style("background-color", "red");*/
-};
+}
