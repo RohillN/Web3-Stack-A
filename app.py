@@ -1,10 +1,12 @@
 from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify, Response
 from mongoengine import *
+from flask_cors import CORS
 import os
 import json
 import csv
 
 app = Flask(__name__)
+CORS(app)
 
 app.config.from_object('config')
 

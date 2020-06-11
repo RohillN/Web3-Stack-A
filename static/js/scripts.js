@@ -16,8 +16,8 @@ function getAll() {
 
 //GET: single country search
 function getSingleCountry() {
-    var $searchName = $('#sCountry');
-    var $foundCountry = $('#foundCountry');
+    let $searchName = $('#sCountry');
+    let $foundCountry = $('#foundCountry');
 
     if ($searchName.val().length != 0) {
         $.get('/getcountries/' + $searchName.val(), function (data) {
@@ -40,8 +40,8 @@ function getSingleCountry() {
 
 //POST: save country entered to mongodb
 function postCountry() {
-    var $name = $('#name');
-    var hasName;
+    let $name = $('#name');
+    let hasName;
     if ($name.val().length != 0) {
         var storeCountry = {
             "name": $name.val()
@@ -54,7 +54,7 @@ function postCountry() {
     }
     if (hasName) {
         $.post(('/getcountries'), storeCountry, function (data) {
-            console.log(data);
+            console.log(data);storeCountry
             $name.val('');
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
             $('#addHeading').text('Country Add Status');
@@ -69,8 +69,8 @@ function postCountry() {
 
 //DELETE: remove country from mongo 
 function DeleteOne() {
-    var $deleteName = $('#dCountry');
-    var hasName;
+    let $deleteName = $('#dCountry');
+    let hasName;
     if ($deleteName.val().length != 0) {
         var $countryToDelete = {
             'name': $deleteName.val()
@@ -101,23 +101,24 @@ function DeleteOne() {
     }
 };
 
-function createGraph() {
+function createCircles() {
     $.get('/getcountries', function (data) {
-        var responseObj = JSON.parse(data);
-        console.log(responseObj);
+        let responseObj = JSON.parse(data);
+        //console.log(responseObj);
+        createAxis(responseObj);
 
         // a common thing is to 'wrap' some elements in a 'g' container (group)
         // this is like wrapping html elements in a container div
-        var g = d3.select("svg").selectAll("g").data(responseObj);
+        let g = d3.select("svg").selectAll("g").data(responseObj);
 
         // create new 'g' elements for each country
-        var en = g.enter().append("g")
+        let en = g.enter().append("g")
             .attr("transform", function (d) {
                 return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 680) + 50 + ")"
             });
 
         // add a circle to each 'g'
-        var circle = en.append("circle")
+        let circle = en.append("circle")
             .attr("r", function (d) { return Math.random() * 50 })
             .attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
 
@@ -129,10 +130,30 @@ function createGraph() {
     })
 };
 
-function createCircles() {
+function createAxis(data)
+{
+    let hold = [];
+    hold.push(data);
+    console.log(hold);
+    $.each(hold, function (i, item) {
+        console.log(item);
+        $.each(item, function (j, key) {
+            console.log(key);
+            if (i == "population_total") {
+                //console.log(i);
+                $.each(key, function (i, value) {
+                    //console.log(key + " : " + value);
+                });
+            }
+        });
+
+    });
+}
+
+function createAxisDraft() {
     populationYear = [];
     populationCount = [];
-    //var g = d3.select("svg").selectAll("g").data(responseObj);
+    //let g = d3.select("svg").selectAll("g").data(responseObj);
     console.log("Start for each loop");
     $.each(responseObj, function (i, item) {
         //console.log(item);
@@ -153,7 +174,7 @@ function createCircles() {
     //population total first record
     //getting year - it is a constant over all countries
     //popluation number - currently only first records number - need to get min max of all population number and divide by millions to get even spread.
-    var populationFirst = responseObj[0];
+    let populationFirst = responseObj[0];
     //console.log(populationFirst.name);
     $.each(populationFirst.data, function (i, item) {
         if (i == "population_total") {
@@ -179,29 +200,29 @@ function createCircles() {
     console.log("End for each loop");
 
 
-    var width = 1100;
-    var height = 700;
-    //var temp = [10, 15, 20, 25, 30];
+    let width = 1100;
+    let height = 700;
+    //let temp = [10, 15, 20, 25, 30];
 
     // Append SVG 
-    var svg = d3.select("svg");
+    let svg = d3.select("svg");
 
     // Create scale X
-    var scaleX = d3.scaleLinear()
+    let scaleX = d3.scaleLinear()
         .domain([d3.max(populationCount), d3.min(populationCount)])
         .range([0, width - 100]);
 
     // Create scale Y
-    var scaleY = d3.scaleLinear()
+    let scaleY = d3.scaleLinear()
         .domain([d3.max(populationYear), d3.min(populationYear)])
         .range([0, height - 100]);
 
     // Add scales to x axis
-    var x_axis = d3.axisBottom()
+    let x_axis = d3.axisBottom()
         .scale(scaleX);
 
     // Add scale to y axis
-    var y_axis = d3.axisLeft()
+    let y_axis = d3.axisLeft()
         .scale(scaleY);
 
     //Append group: "g" and insert x axis
@@ -214,7 +235,7 @@ function createCircles() {
         .attr("transform", "translate(90, 10)")
         .call(y_axis);
 
-    var bar1 = svg.append("circle")
+    let bar1 = svg.append("circle")
         .attr("fill", "blue")
         .attr("transform", function (d) {
             return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
@@ -223,7 +244,7 @@ function createCircles() {
         .attr("height", 20)
         .attr("width", 10)
 
-    var bar2 = svg.append("circle")
+    let bar2 = svg.append("circle")
         .attr("fill", "blue")
         .attr("transform", function (d) {
             return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
@@ -249,21 +270,21 @@ function createCircles() {
 
     /*
  
-    var responseObj = data;
+    let responseObj = data;
     console.log(responseObj);
  
     // a common thing is to 'wrap' some elements in a 'g' container (group)
     // this is like wrapping html elements in a container div
-    var g = d3.select("svg").selectAll("g").data(responseObj);
+    let g = d3.select("svg").selectAll("g").data(responseObj);
  
     // create new 'g' elements for each country
-    var en = g.enter().append("g")
+    let en = g.enter().append("g")
         .attr("transform",function(d){ 
         return "translate("+ (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 +")" 
     });
  
     // add a circle to each 'g'
-    var circle = en.append("circle")
+    let circle = en.append("circle")
         .attr("r",function(d){ return Math.random() * 10 })
         .attr("fill",function(d,i){ return i % 2 == 0 ? "orange" : "blue" });
  
