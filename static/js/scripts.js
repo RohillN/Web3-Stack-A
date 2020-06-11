@@ -104,29 +104,46 @@ function DeleteOne() {
 function createCircles() {
     $.get('/getcountries', function (data) {
         let responseObj = JSON.parse(data);
-        //console.log(responseObj);
-        sortAxisData(responseObj);
+        console.log(responseObj);
 
-        // // a common thing is to 'wrap' some elements in a 'g' container (group)
-        // // this is like wrapping html elements in a container div
-        // let g = d3.select("svg").selectAll("g").data(responseObj);
+        //sortAxisData(responseObj);
 
-        // // create new 'g' elements for each country
-        // let en = g.enter().append("g")
-        //     .attr("transform", function (d) {
-        //         return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 680) + 50 + ")"
-        //     });
+        // a common thing is to 'wrap' some elements in a 'g' container (group)
+        // this is like wrapping html elements in a container div
+        let g = d3.select("svg").selectAll("g").data(responseObj);
 
-        // // add a circle to each 'g'
-        // let circle = en.append("circle")
-        //     .attr("r", function (d) { return Math.random() * 50 })
-        //     .attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
+        // create new 'g' elements for each country
+        let en = g.enter().append("g")
+            .attr("transform", function (d) {
+                //console.log(d.data.population_total[1991]);
+                return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 600) + 50 + ")"
+            });
 
-        // // add a text to each 'g'
-        // en.append("text").text(function (d) { return d.name });
+        // add a circle to each 'g'
+        let circle = en.append("circle")
+            .attr("r", function (d) { 
+                //greater than 100mil
+                if (d.data.population_total[1991] > 100000000)
+                {
+                    return 50;
+                }
+                //greater than 10mill & less then 100mil
+                else if (d.data.population_total[1991] > 10000000  && d.data.population_total[1991] < 100000000)
+                {
+                    return 25;
+                }
+                else
+                {
+                    return 10;
+                }
+            })
+            .attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
 
-        // d3.select("circle").transition()
-        //     .style("background-color", "red");
+        // add a text to each 'g'
+        en.append("text").text(function (d) { return d.name });
+
+        d3.select("circle").transition()
+            .style("background-color", "red");
     })
 };
 
