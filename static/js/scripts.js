@@ -102,147 +102,70 @@ function DeleteOne() {
 };
 
 function createCircles() {
+    let margin = { top: 10, right: 20, bottom: 30, left: 50 };
+    let width = 1110 - margin.left - margin.right;
+    let height = 662 - margin.top - margin.bottom;
+
     $.get('/getcountries', function (data) {
         let responseObj = JSON.parse(data);
-        console.log(responseObj);
+        //console.log(responseObj);
 
-        //sortAxisData(responseObj);
+        //filter data to only use countries with employment rates and population
+        let sortedData = responseObj.filter(function (d) { return (d.data.males_aged_15plus_employment_rate_percent && d.data.females_aged_15plus_employment_rate_percent) });
 
-        // a common thing is to 'wrap' some elements in a 'g' container (group)
-        // this is like wrapping html elements in a container div
-        let g = d3.select("svg").selectAll("g").data(responseObj);
+        let svg = d3.select("#data_graph")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        // create new 'g' elements for each country
-        let en = g.enter().append("g")
-            .attr("transform", function (d) {
-                //console.log(d.data.population_total[1991]);
-                return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 600) + 50 + ")"
-            });
+        // x axis
+        let x = d3.scaleLinear()
+            .domain([0, 100])
+            .range([0, width]);
 
-        // add a circle to each 'g'
-        let circle = en.append("circle")
-            .attr("r", function (d) { 
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        // y axis 
+        let y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height, 0]);
+
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // circle scale
+        let z = d3.scaleLinear()
+            .domain([10, 30])
+            .range([1, 10]);
+
+        // add circles
+        svg.append("g")
+            .selectAll("dot")
+            .data(sortedData)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[1991]); })
+            .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[1991]); })
+            .attr("r", function (d) {
                 //greater than 100mil
-                if (d.data.population_total[1991] > 100000000)
-                {
-                    return 50;
+                if (d.data.population_total[1991] > 100000000) {
+                    return z(80);
                 }
                 //greater than 10mill & less then 100mil
-                else if (d.data.population_total[1991] > 10000000  && d.data.population_total[1991] < 100000000)
-                {
-                    return 25;
+                else if (d.data.population_total[1991] > 10000000 && d.data.population_total[1991] < 100000000) {
+                    return z(50);
                 }
-                else
-                {
-                    return 10;
+                else {
+                    return z(20);
                 }
             })
-            .attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
+            .style("fill", "orange")
+            .style("opacity", "0.7")
+            .attr("stroke", "black");
 
-        // add a text to each 'g'
-        en.append("text").text(function (d) { return d.name });
-
-        d3.select("circle").transition()
-            .style("background-color", "red");
-    })
-};
-
-function sortAxisData(res) {
-    populationYear = [];
-    populationCount = [];
-    holdPopulation = [];
-    let min;
-    let max;
-    let noMatch = false;
-    // console.log(data[0]);
-    console.log(res);
-    $.each(res, function (i, item) {
-        $.each(item.data, function (j, value) {
-            if (j == "population_total") {
-                $.each(value, function (year, pop) {
-                    let exists = true;
-                    exists = populationYear.includes(year);
-                    if (exists == false) {
-                        populationYear.push(year);
-                    }
-                    populationCount.push(pop);
-                });
-            }
-        });
     });
-    createAxis(populationYear, populationCount)
-}
-
-function createAxis(year, value) {
-    let populationYear = year;
-    let populationCount = value;
-    let width = 1100;
-    let height = 690;
-
-    // Append SVG 
-    let svg = d3.select("svg");
-
-    // Create scale X
-    let scaleX = d3.scaleLinear()
-        .domain([0, d3.max(populationCount)])
-        .range([0, width - 100]);
-
-    // Create scale Y
-    let scaleY = d3.scaleLinear()
-        .domain([d3.max(populationYear), 0])
-        .range([0, height - 100]);
-
-    // Add scales to x axis
-    let x_axis = d3.axisBottom()
-        .scale(scaleX)
-        .ticks(20)
-        .tickFormat(d3.format(".2s"));
-
-    // Add scale to y axis
-    let y_axis = d3.axisLeft()
-        .scale(scaleY);
-
-    //Append group: "g" and insert x axis
-    svg.append("g")
-        .attr("transform", "translate(90, 600)")
-        .call(x_axis);
-
-    //Append group: "g" and insert y axis
-    svg.append("g")
-        .attr("transform", "translate(90, 10)")
-        .call(y_axis);
-}
-
-function DrawCirclesDraft() {
-    let bar1 = svg.append("circle")
-        .attr("fill", "blue")
-        .attr("transform", function (d) {
-            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
-        })
-        .attr("r", 40)
-        .attr("height", 20)
-        .attr("width", 10)
-
-    let bar2 = svg.append("circle")
-        .attr("fill", "blue")
-        .attr("transform", function (d) {
-            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
-        })
-        .attr("r", 40)
-        .attr("height", 20)
-        .attr("width", 10)
-
-    function update() {
-        bar1.transition()
-            .ease(d3.easeLinear)
-            .duration(2000)
-            .attr("r", 150)
-
-        bar2.transition()
-            .ease(d3.easeLinear)
-            .duration(2000)
-            .delay(2000)
-            .attr("r", 150)
-    }
-    update();
 }
