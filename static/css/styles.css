@@ -43,3 +43,11 @@ pre code {
     padding: 20px;
     border: 1px solid #b2b2b2;
 }
+
+.currentYearDisplay {
+    opacity: 0.1;
+    color: black;
+    font-size: 120px;
+    text-align: center;
+    text-anchor: middle;
+}

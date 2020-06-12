@@ -102,9 +102,11 @@ function DeleteOne() {
 };
 
 function createCircles() {
-    let margin = { top: 10, right: 20, bottom: 30, left: 50 };
+    let margin = { top: 60, right: 20, bottom: 60, left: 50 };
     let width = 1110 - margin.left - margin.right;
-    let height = 662 - margin.top - margin.bottom;
+    let height = 712 - margin.top - margin.bottom;
+
+    let currentYear = 1991;
 
     $.get('/getcountries', function (data) {
         let responseObj = JSON.parse(data);
@@ -129,6 +131,13 @@ function createCircles() {
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
 
+        // x axis text label
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height + 50)
+            .text("Males Age 15+ Employment Rate (Percentage)");
+
         // y axis 
         let y = d3.scaleLinear()
             .domain([0, 100])
@@ -136,6 +145,13 @@ function createCircles() {
 
         svg.append("g")
             .call(d3.axisLeft(y));
+
+        // y axis text label
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", "350")
+            .attr("y", "-20")
+            .text("Females Age 15+ Employment Rate (Percentage)");
 
         // circle scale
         let z = d3.scaleLinear()
@@ -148,15 +164,15 @@ function createCircles() {
             .data(sortedData)
             .enter()
             .append("circle")
-            .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[1991]); })
-            .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[1991]); })
+            .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]); })
+            .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]); })
             .attr("r", function (d) {
                 //greater than 100mil
-                if (d.data.population_total[1991] > 100000000) {
+                if (d.data.population_total[currentYear] > 100000000) {
                     return z(80);
                 }
                 //greater than 10mill & less then 100mil
-                else if (d.data.population_total[1991] > 10000000 && d.data.population_total[1991] < 100000000) {
+                else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
                     return z(50);
                 }
                 else {
@@ -167,58 +183,16 @@ function createCircles() {
             .style("opacity", "0.7")
             .attr("stroke", "black");
 
+        svg.append("text")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+            .text(currentYear)
+            .attr("class", "currentYearDisplay");
+
     });
 }
 
 
-function Temp() {
-
-    sortAxisData(sortedData);
-
-    // a common thing is to 'wrap' some elements in a 'g' container (group)
-    // this is like wrapping html elements in a container div
-    let g = d3.select("svg").selectAll("g").data(sortedData);
-
-    // create new 'g' elements for each country
-    let en = g.enter().append("g")
-        .attr("transform", function (d) {
-            //console.log(d.data.population_total[1991]);
-            //return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 600) + 50 + ")"
-        });
-
-    // add a circle to each 'g'
-    let circle = en.append("circle")
-        .attr("r", function (d) {
-            //greater than 100mil
-            if (d.data.population_total[1991] > 100000000) {
-                return 10;
-            }
-            //greater than 10mill & less then 100mil
-            else if (d.data.population_total[1991] > 10000000 && d.data.population_total[1991] < 100000000) {
-                return 10;
-            }
-            else {
-                return 10;
-            }
-        })
-        .attr("transform", function (d) {
-            //x, y
-            //console.log(d.data.males_aged_15plus_employment_rate_percent);
-            return "translate(" + (parseFloat(d.data.males_aged_15plus_employment_rate_percent[2020]) + 130) + "," + (600 - parseFloat(d.data.females_aged_15plus_employment_rate_percent[2020])) + ")";
-        })
-        .attr("fill", function (d) { return "orange" });
-    //.attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
-
-    // add a text to each 'g'
-    en.append("text").text(function (d) { return d.name });
-
-    d3.select("circle").transition()
-        .style("background-color", "red");
-}
-
 function sortAxisData(res) {
-    maleRate = [];
-    femaleRate = [];
     yearLength = [];
     let min;
     let max;
@@ -244,7 +218,6 @@ function sortAxisData(res) {
                     if (maleYearExists == false) {
                         yearLength.push(maleYear);
                     }
-                    maleRate.push(percentM);
                 });
             }
         });
