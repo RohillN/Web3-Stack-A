@@ -101,12 +101,27 @@ function DeleteOne() {
     }
 };
 
+let year = 1991;
+
+function changeYearClick() {
+    if (year == 2022) {
+        year = 1991;
+    }
+    else {
+        year += 1;
+    }
+    console.log(year);
+}
+
 function createCircles() {
     let margin = { top: 60, right: 20, bottom: 60, left: 50 };
     let width = 1110 - margin.left - margin.right;
     let height = 712 - margin.top - margin.bottom;
 
     let currentYear = 1991;
+
+    // add a play button to start animation
+    //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
 
     $.get('/getcountries', function (data) {
         let responseObj = JSON.parse(data);
@@ -115,6 +130,7 @@ function createCircles() {
         //filter data to only use countries with employment rates and population
         let sortedData = responseObj.filter(function (d) { return (d.data.males_aged_15plus_employment_rate_percent && d.data.females_aged_15plus_employment_rate_percent) });
 
+        // select div and create svg 
         let svg = d3.select("#data_graph")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -179,6 +195,7 @@ function createCircles() {
                     return z(20);
                 }
             })
+            .text(function (d) { return d.name })
             .style("fill", "orange")
             .style("opacity", "0.7")
             .attr("stroke", "black");
@@ -187,122 +204,291 @@ function createCircles() {
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
             .text(currentYear)
             .attr("class", "currentYearDisplay");
+    });
+}
 
+function startAnimation() {
+    d3.selectAll("#data_graph > *").remove();
+
+    let margin = { top: 60, right: 20, bottom: 60, left: 50 };
+    let width = 1110 - margin.left - margin.right;
+    let height = 712 - margin.top - margin.bottom;
+
+    let currentYear = 1992;
+
+    // add a play button to start animation
+    //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
+
+    $.get('/getcountries', function (data) {
+        let responseObj = JSON.parse(data);
+        //console.log(responseObj);
+
+        //filter data to only use countries with employment rates and population
+        let sortedData = responseObj.filter(function (d) { return (d.data.males_aged_15plus_employment_rate_percent && d.data.females_aged_15plus_employment_rate_percent) });
+
+        // select div and create svg 
+        let svg = d3.select("#data_graph")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // x axis
+        let x = d3.scaleLinear()
+            .domain([0, 100])
+            .range([0, width]);
+
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        // x axis text label
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height + 50)
+            .text("Males Age 15+ Employment Rate (Percentage)");
+
+        // y axis 
+        let y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height, 0]);
+
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // y axis text label
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", "350")
+            .attr("y", "-20")
+            .text("Females Age 15+ Employment Rate (Percentage)");
+
+        // circle scale
+        let z = d3.scaleLinear()
+            .domain([10, 30])
+            .range([1, 10]);
+
+        // add circles
+        svg.append("g")
+            .selectAll("dot")
+            .data(sortedData)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]); })
+            .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]); })
+            .attr("r", function (d) {
+                //greater than 100mil
+                if (d.data.population_total[currentYear] > 100000000) {
+                    return z(80);
+                }
+                //greater than 10mill & less then 100mil
+                else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
+                    return z(50);
+                }
+                else {
+                    return z(20);
+                }
+            })
+            .text(function (d) { return d.name })
+            .style("fill", "blue")
+            .style("opacity", "0.7")
+            .attr("stroke", "black");
+
+        for (let countryCount = 1991; countryCount <= 2022; countryCount++) {
+            currentYear = countryCount;
+            console.log(currentYear);
+            if (currentYear == 2022) {
+                currentYear = 1991
+            }
+            else {
+                svg.selectAll("circle")
+                    .transition()
+                    .delay(7)
+                    .duration(7000)
+                    .attr("cx", function (d) {
+                        return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]);
+                    })
+                    .attr("cy", function (d) {
+                        return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]);
+                    })
+                    .attr("r", function (d) {
+                        //greater than 100mil
+                        if (d.data.population_total[currentYear] > 100000000) {
+                            return z(80);
+                        }
+                        //greater than 10mill & less then 100mil
+                        else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
+                            return z(50);
+                        }
+                        else {
+                            return z(20);
+                        }
+                    })
+                    .text(function (d) { return d.name })
+                    .style("fill", "red")
+                    .style("opacity", "0.7")
+                    .attr("stroke", "black");
+
+                svg.select("text")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+                    .attr("class", "currentYearDisplay")
+                    .transition()
+                    .delay(function (d, i) { return (i * 3) })
+                    .duration(8000)
+                    .style("opacity", "2")
+                    .text(currentYear);
+            }
+        }
     });
 }
 
 
-function sortAxisData(res) {
-    yearLength = [];
-    let min;
-    let max;
-    let noMatch = false;
-    // console.log(data[0]);
-    console.log(res);
-    $.each(res, function (i, item) {
-        $.each(item.data, function (j, value) {
-            if (j == "females_aged_15plus_employment_rate_percent") {
-                $.each(value, function (femaleYear, percentF) {
-                    let femaleYearExists = true;
-                    femaleYearExists = yearLength.includes(femaleYear);
-                    if (femaleYearExists == false) {
-                        yearLength.push(femaleYear);
-                    }
-                    femaleRate.push(percentF);
-                });
-            }
-            if (j == "males_aged_15plus_employment_rate_percent") {
-                $.each(value, function (maleYear, percentM) {
-                    let maleYearExists = true;
-                    maleYearExists = yearLength.includes(maleYear);
-                    if (maleYearExists == false) {
-                        yearLength.push(maleYear);
-                    }
-                });
-            }
-        });
-    });
+// function sortAxisData(res) {
 
-    // console.log("male rate");
-    // console.log(maleRate);
-    // console.log("female rate");
-    // console.log(femaleRate);
-    // console.log("years");
-    // console.log(yearLength);
-    createAxis(yearLength, femaleRate, maleRate)
-}
+    // for (let count = 1991; count < 2023; count++) {
 
-function createAxis(year, femaleValue, maleValue) {
-    let years = year;
-    let femalePercentRate = femaleValue;
-    let malePercentRate = maleValue;
-    let width = 1100;
-    let height = 690;
+    //     // update circles
+    //     svg.selectAll("dot")
+    //         .data(sortedData)
+    //         .transition()
+    //         .duration(3000)
+    //         .append("circle")
+    //         .attr("cx", function (d) { return console.log(d.data.males_aged_15plus_employment_rate_percent[count]), x(d.data.males_aged_15plus_employment_rate_percent[count]); })
+    //         .attr("cy", function (d) { return console.log(d.data.females_aged_15plus_employment_rate_percent[count]), y(d.data.females_aged_15plus_employment_rate_percent[count]); })
+    //         .attr("r", function (d) {
+    //             //greater than 100mil
+    //             if (d.data.population_total[count] > 100000000) {
+    //                 return z(80);
+    //             }
+    //             //greater than 10mill & less then 100mil
+    //             else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[count] < 100000000) {
+    //                 return z(50);
+    //             }
+    //             else {
+    //                 return z(20);
+    //             }
+    //         })
+    //         .text(function (d) { return d.name })
+    //         .style("fill", "blue")
+    //         .style("opacity", "0.7")
+    //         .attr("stroke", "black");
+    //     svg.append("text")
+    //         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+    //         .text(count)
+    //         .attr("class", "currentYearDisplay");
+    // }
+//     yearLength = [];
+//     let min;
+//     let max;
+//     let noMatch = false;
+//     // console.log(data[0]);
+//     console.log(res);
+//     $.each(res, function (i, item) {
+//         $.each(item.data, function (j, value) {
+//             if (j == "females_aged_15plus_employment_rate_percent") {
+//                 $.each(value, function (femaleYear, percentF) {
+//                     let femaleYearExists = true;
+//                     femaleYearExists = yearLength.includes(femaleYear);
+//                     if (femaleYearExists == false) {
+//                         yearLength.push(femaleYear);
+//                     }
+//                     femaleRate.push(percentF);
+//                 });
+//             }
+//             if (j == "males_aged_15plus_employment_rate_percent") {
+//                 $.each(value, function (maleYear, percentM) {
+//                     let maleYearExists = true;
+//                     maleYearExists = yearLength.includes(maleYear);
+//                     if (maleYearExists == false) {
+//                         yearLength.push(maleYear);
+//                     }
+//                 });
+//             }
+//         });
+//     });
 
-    // Append SVG 
-    let svg = d3.select("svg");
+//     // console.log("male rate");
+//     // console.log(maleRate);
+//     // console.log("female rate");
+//     // console.log(femaleRate);
+//     // console.log("years");
+//     // console.log(yearLength);
+//     createAxis(yearLength, femaleRate, maleRate)
+// }
 
-    // Create scale X
-    let scaleX = d3.scaleLinear()
-        .domain([0, 100])
-        .range([0, width - 100]);
+// function createAxis(year, femaleValue, maleValue) {
+//     let years = year;
+//     let femalePercentRate = femaleValue;
+//     let malePercentRate = maleValue;
+//     let width = 1100;
+//     let height = 690;
 
-    // Create scale Y
-    let scaleY = d3.scaleLinear()
-        .domain([100, 0])
-        .range([0, height - 100]);
+//     // Append SVG 
+//     let svg = d3.select("svg");
 
-    // Add scales to x axis
-    let x_axis = d3.axisBottom()
-        .scale(scaleX)
-        .ticks(20);
+//     // Create scale X
+//     let scaleX = d3.scaleLinear()
+//         .domain([0, 100])
+//         .range([0, width - 100]);
 
-    // Add scale to y axis
-    let y_axis = d3.axisLeft()
-        .scale(scaleY)
-        .ticks(20);
+//     // Create scale Y
+//     let scaleY = d3.scaleLinear()
+//         .domain([100, 0])
+//         .range([0, height - 100]);
 
-    //Append group: "g" and insert x axis
-    svg.append("g")
-        .attr("transform", "translate(90, 600)")
-        .call(x_axis);
+//     // Add scales to x axis
+//     let x_axis = d3.axisBottom()
+//         .scale(scaleX)
+//         .ticks(20);
 
-    //Append group: "g" and insert y axis
-    svg.append("g")
-        .attr("transform", "translate(90, 10)")
-        .call(y_axis);
-}
+//     // Add scale to y axis
+//     let y_axis = d3.axisLeft()
+//         .scale(scaleY)
+//         .ticks(20);
 
-function DrawCirclesDraft() {
-    let bar1 = svg.append("circle")
-        .attr("fill", "blue")
-        .attr("transform", function (d) {
-            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
-        })
-        .attr("r", 40)
-        .attr("height", 20)
-        .attr("width", 10)
+//     //Append group: "g" and insert x axis
+//     svg.append("g")
+//         .attr("transform", "translate(90, 600)")
+//         .call(x_axis);
 
-    let bar2 = svg.append("circle")
-        .attr("fill", "blue")
-        .attr("transform", function (d) {
-            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
-        })
-        .attr("r", 40)
-        .attr("height", 20)
-        .attr("width", 10)
+//     //Append group: "g" and insert y axis
+//     svg.append("g")
+//         .attr("transform", "translate(90, 10)")
+//         .call(y_axis);
+// }
 
-    function update() {
-        bar1.transition()
-            .ease(d3.easeLinear)
-            .duration(2000)
-            .attr("r", 150)
+// function DrawCirclesDraft() {
+//     let bar1 = svg.append("circle")
+//         .attr("fill", "blue")
+//         .attr("transform", function (d) {
+//             return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
+//         })
+//         .attr("r", 40)
+//         .attr("height", 20)
+//         .attr("width", 10)
 
-        bar2.transition()
-            .ease(d3.easeLinear)
-            .duration(2000)
-            .delay(2000)
-            .attr("r", 150)
-    }
-    update();
-}
+//     let bar2 = svg.append("circle")
+//         .attr("fill", "blue")
+//         .attr("transform", function (d) {
+//             return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
+//         })
+//         .attr("r", 40)
+//         .attr("height", 20)
+//         .attr("width", 10)
+
+//     function update() {
+//         bar1.transition()
+//             .ease(d3.easeLinear)
+//             .duration(2000)
+//             .attr("r", 150)
+
+//         bar2.transition()
+//             .ease(d3.easeLinear)
+//             .duration(2000)
+//             .delay(2000)
+//             .attr("r", 150)
+//     }
+//     update();
+// }

@@ -51,3 +51,9 @@ pre code {
     text-align: center;
     text-anchor: middle;
 }
+
+.align-right {
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px
+}
