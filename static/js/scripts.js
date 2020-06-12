@@ -169,3 +169,167 @@ function createCircles() {
 
     });
 }
+
+
+function Temp() {
+
+    sortAxisData(sortedData);
+
+    // a common thing is to 'wrap' some elements in a 'g' container (group)
+    // this is like wrapping html elements in a container div
+    let g = d3.select("svg").selectAll("g").data(sortedData);
+
+    // create new 'g' elements for each country
+    let en = g.enter().append("g")
+        .attr("transform", function (d) {
+            //console.log(d.data.population_total[1991]);
+            //return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 600) + 50 + ")"
+        });
+
+    // add a circle to each 'g'
+    let circle = en.append("circle")
+        .attr("r", function (d) {
+            //greater than 100mil
+            if (d.data.population_total[1991] > 100000000) {
+                return 10;
+            }
+            //greater than 10mill & less then 100mil
+            else if (d.data.population_total[1991] > 10000000 && d.data.population_total[1991] < 100000000) {
+                return 10;
+            }
+            else {
+                return 10;
+            }
+        })
+        .attr("transform", function (d) {
+            //x, y
+            //console.log(d.data.males_aged_15plus_employment_rate_percent);
+            return "translate(" + (parseFloat(d.data.males_aged_15plus_employment_rate_percent[2020]) + 130) + "," + (600 - parseFloat(d.data.females_aged_15plus_employment_rate_percent[2020])) + ")";
+        })
+        .attr("fill", function (d) { return "orange" });
+    //.attr("fill", function (d, i) { return i % 2 == 0 ? "orange" : "blue" });
+
+    // add a text to each 'g'
+    en.append("text").text(function (d) { return d.name });
+
+    d3.select("circle").transition()
+        .style("background-color", "red");
+}
+
+function sortAxisData(res) {
+    maleRate = [];
+    femaleRate = [];
+    yearLength = [];
+    let min;
+    let max;
+    let noMatch = false;
+    // console.log(data[0]);
+    console.log(res);
+    $.each(res, function (i, item) {
+        $.each(item.data, function (j, value) {
+            if (j == "females_aged_15plus_employment_rate_percent") {
+                $.each(value, function (femaleYear, percentF) {
+                    let femaleYearExists = true;
+                    femaleYearExists = yearLength.includes(femaleYear);
+                    if (femaleYearExists == false) {
+                        yearLength.push(femaleYear);
+                    }
+                    femaleRate.push(percentF);
+                });
+            }
+            if (j == "males_aged_15plus_employment_rate_percent") {
+                $.each(value, function (maleYear, percentM) {
+                    let maleYearExists = true;
+                    maleYearExists = yearLength.includes(maleYear);
+                    if (maleYearExists == false) {
+                        yearLength.push(maleYear);
+                    }
+                    maleRate.push(percentM);
+                });
+            }
+        });
+    });
+
+    // console.log("male rate");
+    // console.log(maleRate);
+    // console.log("female rate");
+    // console.log(femaleRate);
+    // console.log("years");
+    // console.log(yearLength);
+    createAxis(yearLength, femaleRate, maleRate)
+}
+
+function createAxis(year, femaleValue, maleValue) {
+    let years = year;
+    let femalePercentRate = femaleValue;
+    let malePercentRate = maleValue;
+    let width = 1100;
+    let height = 690;
+
+    // Append SVG 
+    let svg = d3.select("svg");
+
+    // Create scale X
+    let scaleX = d3.scaleLinear()
+        .domain([0, 100])
+        .range([0, width - 100]);
+
+    // Create scale Y
+    let scaleY = d3.scaleLinear()
+        .domain([100, 0])
+        .range([0, height - 100]);
+
+    // Add scales to x axis
+    let x_axis = d3.axisBottom()
+        .scale(scaleX)
+        .ticks(20);
+
+    // Add scale to y axis
+    let y_axis = d3.axisLeft()
+        .scale(scaleY)
+        .ticks(20);
+
+    //Append group: "g" and insert x axis
+    svg.append("g")
+        .attr("transform", "translate(90, 600)")
+        .call(x_axis);
+
+    //Append group: "g" and insert y axis
+    svg.append("g")
+        .attr("transform", "translate(90, 10)")
+        .call(y_axis);
+}
+
+function DrawCirclesDraft() {
+    let bar1 = svg.append("circle")
+        .attr("fill", "blue")
+        .attr("transform", function (d) {
+            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
+        })
+        .attr("r", 40)
+        .attr("height", 20)
+        .attr("width", 10)
+
+    let bar2 = svg.append("circle")
+        .attr("fill", "blue")
+        .attr("transform", function (d) {
+            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
+        })
+        .attr("r", 40)
+        .attr("height", 20)
+        .attr("width", 10)
+
+    function update() {
+        bar1.transition()
+            .ease(d3.easeLinear)
+            .duration(2000)
+            .attr("r", 150)
+
+        bar2.transition()
+            .ease(d3.easeLinear)
+            .duration(2000)
+            .delay(2000)
+            .attr("r", 150)
+    }
+    update();
+}
