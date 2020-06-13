@@ -257,6 +257,7 @@ function startAnimation() {
 
     let currentYear = 1991;
     let countryCount = 1991;
+    let stopStart = false;
 
     // add a play button to start animation
     //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
@@ -383,25 +384,69 @@ function startAnimation() {
             .attr("id", "yearBGText")
             .attr("class", "currentYearDisplay");
 
-        $("#stop").on("click", function () {
+        $("#next").on("click", function () {
             countryCount += 1;
             currentYear = countryCount;
+            callReDraw();
 
+        });
+
+        $("#back").on("click", function () {
+            countryCount -= 1;
+            if (countryCount < 1991)
+            {
+                countryCount = 2022;
+            }
+            currentYear = countryCount;
+            callReDraw();
+
+        });
+
+        $("#auto-play").on("click", function () {
+            console.log("AUTO PLAY");
+            stopStart = false;
+            function loopAnimation() {
+                if (stopStart == false) {
+                    setTimeout(function () {
+                        countryCount += 1;
+                        currentYear = countryCount;
+                        callReDraw();
+                        console.log(currentYear);
+                        if (countryCount < 2022) {
+                            loopAnimation();
+                        }
+                        if (countryCount == 2022) {
+                            countryCount = 1990;
+                            loopAnimation();
+                        }
+                        // callReDraw();                   
+                    }, 1000)
+                }
+            }
+            if (stopStart == false)
+            {
+                loopAnimation();
+            }
+
+        });
+
+        $("#pause").on("click", function () {
+            console.log("pause the animation");
+            stopStart = true
+            currentYear = currentYear;
+            callReDraw();
+        });
+
+        function callReDraw() {
             if (currentYear == 2023) {
                 countryCount = 1991
                 currentYear = countryCount;
             }
             if (currentYear <= 2022) {
-
-                svg.select("#yearBGText")
-                    .transition()
-                    .duration(5000)
-                    .text(currentYear);
-
                 svg.selectAll("circle")
                     .transition()
-                    .delay(10)
-                    .duration(5000)
+                    //.delay(10)
+                    .duration(1000)
                     .attr("cx", function (d) {
                         return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]);
                     })
@@ -425,11 +470,12 @@ function startAnimation() {
                     .style("fill", "orange")
                     .style("opacity", "0.7")
                     .attr("stroke", "black");
-            }
-        });
-    });
-}
 
-function stopAnimation() {
-    return false;
+                svg.select("#yearBGText")
+                    .transition()
+                    .duration(1000)
+                    .text(currentYear);
+            }
+        }
+    });
 }
