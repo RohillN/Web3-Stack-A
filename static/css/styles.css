@@ -57,3 +57,14 @@ pre code {
     margin-right: 10px;
     margin-top: 10px
 }
+
+.bubbles {
+    stroke-width: 1px;
+    stroke: white;
+    opacity: 1;
+}
+
+.bubbles:hover {
+    stroke-width: 2px;
+    stroke: black;
+}

@@ -138,6 +138,12 @@ function createCircles() {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+        // draw background year text
+        svg.append("text")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+            .text(currentYear)
+            .attr("class", "currentYearDisplay");
+
         // x axis
         let x = d3.scaleLinear()
             .domain([0, 100])
@@ -174,36 +180,71 @@ function createCircles() {
             .domain([10, 30])
             .range([1, 10]);
 
+        // create default for tooltip hover which will be invisible to start
+        let tooltip = d3.select("#data_graph")
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "black")
+            .style("border-radius", "5px")
+            .style("padding", "10px")
+            .style("color", "white");
+
+        // show and update on mouse hover
+        let showToolTip = function (d) {
+            tooltip
+                .transition()
+                .duration(200);
+
+            tooltip
+                .style("opacity", 1)
+                .html("Country: " + d.name)
+                .style("left", (d3.mouse(this)[0]) + "px")
+                .style("top", (d3.mouse(this)[1]) + "px");
+        }
+
+        let moveToolTip = function (d) {
+            tooltip
+                .style("left", (d3.mouse(this)[0]) + "px")
+                .style("top", (d3.mouse(this)[1]) + "px");
+        }
+
+        let hideToolTip = function (d) {
+            tooltip
+                .transition()
+                .duration(200)
+                .style("opacity", 0);
+        }
+
         // add circles
         svg.append("g")
             .selectAll("dot")
             .data(sortedData)
             .enter()
             .append("circle")
+            .attr("class", "bubbles")
             .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]); })
             .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]); })
             .attr("r", function (d) {
                 //greater than 100mil
                 if (d.data.population_total[currentYear] > 100000000) {
-                    return z(80);
+                    return z(70);
                 }
                 //greater than 10mill & less then 100mil
                 else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
                     return z(50);
                 }
                 else {
-                    return z(20);
+                    return z(30);
                 }
             })
             .text(function (d) { return d.name })
             .style("fill", "orange")
             .style("opacity", "0.7")
-            .attr("stroke", "black");
-
-        svg.append("text")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-            .text(currentYear)
-            .attr("class", "currentYearDisplay");
+            .attr("stroke", "black")
+            .on("mouseover", showToolTip)
+            .on("mousemove", moveToolTip)
+            .on("mouseleave", hideToolTip);
     });
 }
 
@@ -214,7 +255,8 @@ function startAnimation() {
     let width = 1110 - margin.left - margin.right;
     let height = 712 - margin.top - margin.bottom;
 
-    let currentYear = 1992;
+    let currentYear = 1991;
+    let countryCount = 1991;
 
     // add a play button to start animation
     //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
@@ -265,6 +307,41 @@ function startAnimation() {
             .attr("y", "-20")
             .text("Females Age 15+ Employment Rate (Percentage)");
 
+        // create default for tooltip hover which will be invisible to start
+        let tooltip = d3.select("#data_graph")
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "black")
+            .style("border-radius", "5px")
+            .style("padding", "10px")
+            .style("color", "white");
+
+        // show and update on mouse hover
+        let showToolTip = function (d) {
+            tooltip
+                .transition()
+                .duration(200);
+
+            tooltip
+                .style("opacity", 1)
+                .html("Country: " + d.name + "<br>Population: " + d.data.population_total[currentYear] + "<br>Female Rate: " + d.data.females_aged_15plus_employment_rate_percent[currentYear] + "%" + "<br>Female Rate: " + d.data.males_aged_15plus_employment_rate_percent[currentYear] + "%")
+                .style("left", (d3.mouse(this)[0]) + "px")
+                .style("top", (d3.mouse(this)[1]) + "px");
+        }
+
+        let moveToolTip = function (d) {
+            tooltip
+                .style("left", (d3.mouse(this)[0]) + "px")
+                .style("top", (d3.mouse(this)[1]) + "px");
+        }
+
+        let hideToolTip = function (d) {
+            tooltip
+                .transition()
+                .duration(200)
+                .style("opacity", 0);
+        }
         // circle scale
         let z = d3.scaleLinear()
             .domain([10, 30])
@@ -276,6 +353,7 @@ function startAnimation() {
             .data(sortedData)
             .enter()
             .append("circle")
+            .attr("class", "bubbles")
             .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]); })
             .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]); })
             .attr("r", function (d) {
@@ -294,19 +372,36 @@ function startAnimation() {
             .text(function (d) { return d.name })
             .style("fill", "blue")
             .style("opacity", "0.7")
-            .attr("stroke", "black");
+            .attr("stroke", "black")
+            .on("mouseover", showToolTip)
+            .on("mousemove", moveToolTip)
+            .on("mouseleave", hideToolTip);;
 
-        for (let countryCount = 1991; countryCount <= 2022; countryCount++) {
+        svg.append("text")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+            .text(currentYear)
+            .attr("id", "yearBGText")
+            .attr("class", "currentYearDisplay");
+
+        $("#stop").on("click", function () {
+            countryCount += 1;
             currentYear = countryCount;
-            console.log(currentYear);
-            if (currentYear == 2022) {
-                currentYear = 1991
+
+            if (currentYear == 2023) {
+                countryCount = 1991
+                currentYear = countryCount;
             }
-            else {
+            if (currentYear <= 2022) {
+
+                svg.select("#yearBGText")
+                    .transition()
+                    .duration(5000)
+                    .text(currentYear);
+
                 svg.selectAll("circle")
                     .transition()
-                    .delay(7)
-                    .duration(7000)
+                    .delay(10)
+                    .duration(5000)
                     .attr("cx", function (d) {
                         return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]);
                     })
@@ -327,19 +422,14 @@ function startAnimation() {
                         }
                     })
                     .text(function (d) { return d.name })
-                    .style("fill", "red")
+                    .style("fill", "orange")
                     .style("opacity", "0.7")
                     .attr("stroke", "black");
-
-                svg.select("text")
-                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-                    .attr("class", "currentYearDisplay")
-                    .transition()
-                    .delay(function (d, i) { return (i * 3) })
-                    .duration(8000)
-                    .style("opacity", "2")
-                    .text(currentYear);
             }
-        }
+        });
     });
+}
+
+function stopAnimation() {
+    return false;
 }
