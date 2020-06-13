@@ -68,3 +68,17 @@ pre code {
     stroke-width: 2px;
     stroke: black;
 }
+
+.key-style {
+    font-size: 14px;
+    color: black;
+    text-anchor: middle;
+}
+
+.box {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    border: 0.5px solid;
+    border-radius: 50px;
+  }

@@ -1,23 +1,22 @@
 {% include "head.html" %}
 
 <header>
-{% include "navigation.html" %}
+    {% include "navigation.html" %}
 </header>
 
-    <div class="container bg-light">
-       
-        <h1 class="text-center">D3 Javascript</h1>  
-        <button id="load-d3" class="btn btn-primary" onclick="createCircles()">Load Graph</button> 
-        <button id="play" class="btn btn-success" onclick="startAnimation()">Play</button> 
-        <button id="back" class="btn btn-info">Previous Year</button>
-        <button id="next" class="btn btn-danger">Next Year</button> 
-        <button id="auto-play" class="btn btn-dark">Auto Play</button> 
-        <button id="pause" class="btn btn-warning">Pause / Stop</button>
-        <div>
-            <div id="data_graph" class="mt-5 border border-dark">
-                <div id="play_button">
-                </div>
-            </div>
+<div class="container bg-light">
+
+    <h1 class="text-center">D3 Javascript</h1>
+    <button id="load-d3" class="btn btn-primary" onclick="createCircles()">Load Graph</button>
+    <button id="play" class="btn btn-success" onclick="startAnimation()">Play</button>
+    <button id="back" class="btn btn-info">Previous Year</button>
+    <button id="next" class="btn btn-danger">Next Year</button>
+    <button id="auto-play" class="btn btn-dark">Auto Play</button>
+    <button id="pause" class="btn btn-warning">Pause / Stop</button>
+    <div>
+        <div id="data_graph" class="mt-5 border border-dark">
+            <div id="play_button"></div>
         </div>
     </div>
+</div>
 {% include "footer.html" %}

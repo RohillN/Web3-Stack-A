@@ -114,12 +114,12 @@ function changeYearClick() {
 }
 
 function createCircles() {
-    let margin = { top: 60, right: 20, bottom: 60, left: 50 };
+    let margin = { top: 100, right: 20, bottom: 60, left: 50 };
     let width = 1110 - margin.left - margin.right;
     let height = 712 - margin.top - margin.bottom;
 
     let currentYear = 1991;
-
+    let colorKeys = [{ 'key': 'pink', 'text': "Females Over 50%" }, { 'key': 'blue', 'text': "Males Over 50%" }, { 'key': 'orange', 'text': "Both Over 50%" }, { 'key': 'red', 'text': "Both Under 50%" }];
     // add a play button to start animation
     //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
 
@@ -165,8 +165,36 @@ function createCircles() {
             .domain([0, 100])
             .range([height, 0]);
 
+
         svg.append("g")
             .call(d3.axisLeft(y));
+
+        // Usually you have a color scale in your chart already
+        var color = d3.scaleOrdinal()
+            .domain([0, 4])
+            .range([0, 4]);
+
+        // Add one dot in the legend for each name.
+        svg.selectAll("keydots")
+            .data(colorKeys)
+            .enter()
+            .append("circle")
+            .attr("cx", width - 170)
+            .attr("cy", function (d, i) { return -75 + i * 20 }) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("r", 7)
+            .style("fill", function (d) { return d.key });
+
+        // Add one dot in the legend for each name.
+        svg.selectAll("keylabels")
+            .data(colorKeys)
+            .enter()
+            .append("text")
+            .attr("x", width - 150)
+            .attr("y", function (d, i) { return -70 + i * 20 }) // 100 is where the first dot appears. 25 is the distance between dots
+            .style("fill", function (d) { return d.key })
+            .text(function (d) { return d.text })
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle");
 
         // y axis text label
         svg.append("text")
@@ -251,13 +279,17 @@ function createCircles() {
 function startAnimation() {
     d3.selectAll("#data_graph > *").remove();
 
-    let margin = { top: 60, right: 20, bottom: 60, left: 50 };
+    let margin = { top: 100, right: 20, bottom: 60, left: 50 };
     let width = 1110 - margin.left - margin.right;
     let height = 712 - margin.top - margin.bottom;
 
     let currentYear = 1991;
     let countryCount = 1991;
     let stopStart = false;
+
+    let circleXL = 80;
+    let circleL = 50;
+    let circleM = 30
 
     // add a play button to start animation
     //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
@@ -360,14 +392,14 @@ function startAnimation() {
             .attr("r", function (d) {
                 //greater than 100mil
                 if (d.data.population_total[currentYear] > 100000000) {
-                    return z(80);
+                    return z(circleXL);
                 }
                 //greater than 10mill & less then 100mil
                 else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
-                    return z(50);
+                    return z(circleL);
                 }
                 else {
-                    return z(20);
+                    return z(circleM);
                 }
             })
             .text(function (d) { return d.name })
@@ -379,7 +411,7 @@ function startAnimation() {
             .on("mouseleave", hideToolTip);;
 
         svg.append("text")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+            .attr("transform", "translate(" + width / 2 + "," + 100 + ")")
             .text(currentYear)
             .attr("id", "yearBGText")
             .attr("class", "currentYearDisplay");
@@ -393,8 +425,7 @@ function startAnimation() {
 
         $("#back").on("click", function () {
             countryCount -= 1;
-            if (countryCount < 1991)
-            {
+            if (countryCount < 1991) {
                 countryCount = 2022;
             }
             currentYear = countryCount;
@@ -423,8 +454,7 @@ function startAnimation() {
                     }, 1000)
                 }
             }
-            if (stopStart == false)
-            {
+            if (stopStart == false) {
                 loopAnimation();
             }
 
@@ -456,18 +486,36 @@ function startAnimation() {
                     .attr("r", function (d) {
                         //greater than 100mil
                         if (d.data.population_total[currentYear] > 100000000) {
-                            return z(80);
+                            return z(circleXL);
                         }
                         //greater than 10mill & less then 100mil
                         else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
-                            return z(50);
+                            return z(circleL);
                         }
                         else {
-                            return z(20);
+                            return z(circleM);
                         }
                     })
                     .text(function (d) { return d.name })
-                    .style("fill", "orange")
+                    .style("fill", function (d) {
+                        //if females work percetage is greater than males return red color
+                        if (d.data.females_aged_15plus_employment_rate_percent[currentYear] >= 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] < 50) {
+                            return "pink";
+                        }
+                        //if male work percetage is greater than females return blue color
+                        else if (d.data.females_aged_15plus_employment_rate_percent[currentYear] < 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] >= 50) {
+                            return "blue";
+                        }
+                        // both females and male have percentage is over 50
+                        else if (d.data.females_aged_15plus_employment_rate_percent[currentYear] >= 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] >= 50) {
+                            return "orange";
+                        }
+                        // both females and males work percentage is less than 50
+                        else if (d.data.females_aged_15plus_employment_rate_percent[currentYear] < 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] < 50) {
+                            return "red";
+                        }
+
+                    })
                     .style("opacity", "0.7")
                     .attr("stroke", "black");
 
@@ -478,4 +526,36 @@ function startAnimation() {
             }
         }
     });
+
+    test();
+
+}
+
+function test() {
+    let colorKeys = [{ 'key': 'pink', 'text': "Females Over 50%" }, { 'key': 'blue', 'text': "Males Over 50%" }, { 'key': 'orange', 'text': "Both Over 50%" }, { 'key': 'red', 'text': "Both Under 50%" }];
+
+    //var colorList = { color1: 'pink', t2: 'blue', t3: 'orange', t4: 'red' };
+
+    colorize = function (colorKeys) {
+        let container = document.getElementById('data_graph');
+
+        $.each(colorKeys, function (key, value) {
+            console.log(value.key);
+            let boxContainer = document.createElement("div");
+            boxContainer.className = "align-right";
+            let box = document.createElement("div");
+            let label = document.createElement("span");
+
+            label.innerHTML = value.text;
+            box.className = "box";
+            box.style.backgroundColor = value.key;
+
+            boxContainer.appendChild(box);
+            boxContainer.appendChild(label);
+
+            container.appendChild(boxContainer);
+        });
+    }
+
+    colorize(colorKeys);
 }
