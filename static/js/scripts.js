@@ -101,181 +101,7 @@ function DeleteOne() {
     }
 };
 
-let year = 1991;
-
-function changeYearClick() {
-    if (year == 2022) {
-        year = 1991;
-    }
-    else {
-        year += 1;
-    }
-    console.log(year);
-}
-
-function createCircles() {
-    let margin = { top: 100, right: 20, bottom: 60, left: 50 };
-    let width = 1110 - margin.left - margin.right;
-    let height = 712 - margin.top - margin.bottom;
-
-    let currentYear = 1991;
-    let colorKeys = [{ 'key': 'pink', 'text': "Females Over 50%" }, { 'key': 'blue', 'text': "Males Over 50%" }, { 'key': 'orange', 'text': "Both Over 50%" }, { 'key': 'red', 'text': "Both Under 50%" }];
-    // add a play button to start animation
-    //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
-
-    $.get('/getcountries', function (data) {
-        let responseObj = JSON.parse(data);
-        //console.log(responseObj);
-
-        //filter data to only use countries with employment rates and population
-        let sortedData = responseObj.filter(function (d) { return (d.data.males_aged_15plus_employment_rate_percent && d.data.females_aged_15plus_employment_rate_percent) });
-
-        // select div and create svg 
-        let svg = d3.select("#data_graph")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        // draw background year text
-        svg.append("text")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-            .text(currentYear)
-            .attr("class", "currentYearDisplay");
-
-        // x axis
-        let x = d3.scaleLinear()
-            .domain([0, 100])
-            .range([0, width]);
-
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-
-        // x axis text label
-        svg.append("text")
-            .attr("text-anchor", "end")
-            .attr("x", width)
-            .attr("y", height + 50)
-            .text("Males Age 15+ Employment Rate (Percentage)");
-
-        // y axis 
-        let y = d3.scaleLinear()
-            .domain([0, 100])
-            .range([height, 0]);
-
-
-        svg.append("g")
-            .call(d3.axisLeft(y));
-
-        // Usually you have a color scale in your chart already
-        var color = d3.scaleOrdinal()
-            .domain([0, 4])
-            .range([0, 4]);
-
-        // Add one dot in the legend for each name.
-        svg.selectAll("keydots")
-            .data(colorKeys)
-            .enter()
-            .append("circle")
-            .attr("cx", width - 170)
-            .attr("cy", function (d, i) { return -75 + i * 20 }) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 7)
-            .style("fill", function (d) { return d.key });
-
-        // Add one dot in the legend for each name.
-        svg.selectAll("keylabels")
-            .data(colorKeys)
-            .enter()
-            .append("text")
-            .attr("x", width - 150)
-            .attr("y", function (d, i) { return -70 + i * 20 }) // 100 is where the first dot appears. 25 is the distance between dots
-            .style("fill", function (d) { return d.key })
-            .text(function (d) { return d.text })
-            .attr("text-anchor", "left")
-            .style("alignment-baseline", "middle");
-
-        // y axis text label
-        svg.append("text")
-            .attr("text-anchor", "end")
-            .attr("x", "350")
-            .attr("y", "-20")
-            .text("Females Age 15+ Employment Rate (Percentage)");
-
-        // circle scale
-        let z = d3.scaleLinear()
-            .domain([10, 30])
-            .range([1, 10]);
-
-        // create default for tooltip hover which will be invisible to start
-        let tooltip = d3.select("#data_graph")
-            .append("div")
-            .style("opacity", 0)
-            .attr("class", "tooltip")
-            .style("background-color", "black")
-            .style("border-radius", "5px")
-            .style("padding", "10px")
-            .style("color", "white");
-
-        // show and update on mouse hover
-        let showToolTip = function (d) {
-            tooltip
-                .transition()
-                .duration(200);
-
-            tooltip
-                .style("opacity", 1)
-                .html("Country: " + d.name)
-                .style("left", (d3.mouse(this)[0]) + "px")
-                .style("top", (d3.mouse(this)[1]) + "px");
-        }
-
-        let moveToolTip = function (d) {
-            tooltip
-                .style("left", (d3.mouse(this)[0]) + "px")
-                .style("top", (d3.mouse(this)[1]) + "px");
-        }
-
-        let hideToolTip = function (d) {
-            tooltip
-                .transition()
-                .duration(200)
-                .style("opacity", 0);
-        }
-
-        // add circles
-        svg.append("g")
-            .selectAll("dot")
-            .data(sortedData)
-            .enter()
-            .append("circle")
-            .attr("class", "bubbles")
-            .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]); })
-            .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]); })
-            .attr("r", function (d) {
-                //greater than 100mil
-                if (d.data.population_total[currentYear] > 100000000) {
-                    return z(70);
-                }
-                //greater than 10mill & less then 100mil
-                else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
-                    return z(50);
-                }
-                else {
-                    return z(30);
-                }
-            })
-            .text(function (d) { return d.name })
-            .style("fill", "orange")
-            .style("opacity", "0.7")
-            .attr("stroke", "black")
-            .on("mouseover", showToolTip)
-            .on("mousemove", moveToolTip)
-            .on("mouseleave", hideToolTip);
-    });
-}
-
+// start / load d3 to run the graph
 function startAnimation() {
     d3.selectAll("#data_graph > *").remove();
 
@@ -291,9 +117,7 @@ function startAnimation() {
     let circleL = 50;
     let circleM = 30
 
-    // add a play button to start animation
-    //$("#play_button").html("<button id='click-play' class='btn btn-secondary btn-sm align-right' onclick=''>Play</button>");
-
+    // call a get request and parse the json data
     $.get('/getcountries', function (data) {
         let responseObj = JSON.parse(data);
         //console.log(responseObj);
@@ -314,6 +138,7 @@ function startAnimation() {
             .domain([0, 100])
             .range([0, width]);
 
+        // append group element and call x axis translate it to the bottom
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
@@ -330,6 +155,7 @@ function startAnimation() {
             .domain([0, 100])
             .range([height, 0]);
 
+        // append group element and call the y axis
         svg.append("g")
             .call(d3.axisLeft(y));
 
@@ -360,13 +186,13 @@ function startAnimation() {
                 .style("opacity", 1)
                 .html("Country: " + d.name + "<br>Population: " + d.data.population_total[currentYear] + "<br>Female Rate: " + d.data.females_aged_15plus_employment_rate_percent[currentYear] + "%" + "<br>Female Rate: " + d.data.males_aged_15plus_employment_rate_percent[currentYear] + "%")
                 .style("left", (d3.mouse(this)[0]) + "px")
-                .style("top", (d3.mouse(this)[1]) + "px");
+                .style("top", (d3.mouse(this)[1]) + 180 + "px");
         }
 
         let moveToolTip = function (d) {
             tooltip
                 .style("left", (d3.mouse(this)[0]) + "px")
-                .style("top", (d3.mouse(this)[1]) + "px");
+                .style("top", (d3.mouse(this)[1]) + 180 + "px");
         }
 
         let hideToolTip = function (d) {
@@ -406,9 +232,9 @@ function startAnimation() {
             .style("fill", "blue")
             .style("opacity", "0.7")
             .attr("stroke", "black")
-            .on("mouseover", showToolTip)
-            .on("mousemove", moveToolTip)
-            .on("mouseleave", hideToolTip);;
+            .on("mouseover", showToolTip)       //on events call the function to show 
+            .on("mousemove", moveToolTip)       //on even move call move tooltip
+            .on("mouseleave", hideToolTip);     //on event leave call hide tool tip
 
         svg.append("text")
             .attr("transform", "translate(" + width / 2 + "," + 100 + ")")
@@ -449,8 +275,7 @@ function startAnimation() {
                         if (countryCount == 2022) {
                             countryCount = 1990;
                             loopAnimation();
-                        }
-                        // callReDraw();                   
+                        }                   
                     }, 1000)
                 }
             }
@@ -526,15 +351,12 @@ function startAnimation() {
             }
         }
     });
-
-    test();
+    colorKeyLegend();
 
 }
 
-function test() {
+function colorKeyLegend() {
     let colorKeys = [{ 'key': 'pink', 'text': "Females Over 50%" }, { 'key': 'blue', 'text': "Males Over 50%" }, { 'key': 'orange', 'text': "Both Over 50%" }, { 'key': 'red', 'text': "Both Under 50%" }];
-
-    //var colorList = { color1: 'pink', t2: 'blue', t3: 'orange', t4: 'red' };
 
     colorize = function (colorKeys) {
         let container = document.getElementById('data_graph');
