@@ -5,32 +5,33 @@ $(function () {
 //GET: all countries from mongodb
 function getAll() {
     $.get('/getcountries', function (data) {
-        //console.log(data);
+        console.log(data);
         $('#temp-hold').text(data);
     })
         .fail(function (data) {
-            $('#temp-hold').text(data);
-        })
+            console.log(data);
+            $('#temp-hold').text(data.responseText);
+        });
 };
 
 //GET: single country search
 function getSingleCountry() {
-    var $searchName = $('#sCountry');
-    var $foundCountry = $('#foundCountry');
+    let $searchName = $('#sCountry');
+    let $foundCountry = $('#foundCountry');
 
     if ($searchName.val().length != 0) {
         $.get('/getcountries/' + $searchName.val(), function (data) {
             console.log(data);
             $('#foundHeading').text('Country Search Result');
-            $foundCountry.html("Search Input: " + $searchName.val()+ "<br><br>" + data);
+            $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data);
             $searchName.val('');
+        }).fail(function (data) {
+            $('#foundHeading').text('Country Search Result');
+            $foundCountry.html("Search Input: " + $searchName.val() + "<br><br>" + data.responseText);
+            $searchName.val('');
+            console.log(data);
+
         })
-            .fail(function () 
-            {
-                $('#foundHeading').text('Country Search Result');
-                $foundCountry.html("Search Input: " + $searchName.val());
-                $searchName.val('');
-            })
     }
     else {
         alert('Invalid Input, Please Try Again');
@@ -39,8 +40,8 @@ function getSingleCountry() {
 
 //POST: save country entered to mongodb
 function postCountry() {
-    var $name = $('#name');
-    var hasName;
+    let $name = $('#name');
+    let hasName;
     if ($name.val().length != 0) {
         var storeCountry = {
             "name": $name.val()
@@ -53,19 +54,23 @@ function postCountry() {
     }
     if (hasName) {
         $.post(('/getcountries'), storeCountry, function (data) {
-            console.log(data);
+            console.log(data); storeCountry
             $name.val('');
             console.log('Countries Post Method: { name: ' + ' ' + storeCountry.name + ' , data: ' + storeCountry.data + ' }');
-            $('#addHeading').text('Country Add Status:');
-            $('#country').text("Success Country Added: " + data);
+            $('#addHeading').text('Country Add Status');
+            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Success Country Added: " + data);
+        }).fail(function (data) {
+            $('#addHeading').text('Country Add Status');
+            console.log(data);
+            $('#country').html("Add Input: " + storeCountry.name + "<br><br>Invalid Country Add: " + data.responseText);
         })
     }
-};
+}
 
 //DELETE: remove country from mongo 
 function DeleteOne() {
-    var $deleteName = $('#dCountry');
-    var hasName;
+    let $deleteName = $('#dCountry');
+    let hasName;
     if ($deleteName.val().length != 0) {
         var $countryToDelete = {
             'name': $deleteName.val()
@@ -87,182 +92,292 @@ function DeleteOne() {
                 $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data);
                 $deleteName.val('');
             }
+        }).fail(function (data) {
+            console.log(data);
+            $('#deleteHeading').text('Country Delete Status');
+            $('#deleteCountry').html("Delete Input: " + $countryToDelete.name + "<br><br>" + data.responseText);
+            $deleteName.val('');
         })
     }
 };
 
-function createGraph()
-{
-    $.get('/getcountries', function (data) 
-    {
-        var responseObj = JSON.parse(data);
-        console.log(responseObj);
+// start / load d3 to run the graph
+function startAnimation() {
+    d3.selectAll("#data_graph > *").remove();
 
-        // a common thing is to 'wrap' some elements in a 'g' container (group)
-        // this is like wrapping html elements in a container div
-        var g = d3.select("svg").selectAll("g").data(responseObj);
+    let margin = { top: 100, right: 20, bottom: 60, left: 50 };
+    let width = 1110 - margin.left - margin.right;
+    let height = 712 - margin.top - margin.bottom;
 
-        // create new 'g' elements for each country
-        var en = g.enter().append("g")
-            .attr("transform",function(d){ 
-            return "translate("+ (Math.random() * 1100) + 50 + "," + (Math.random() * 680) + 50 +")" 
-        });
+    let currentYear = 1991;
+    let countryCount = 1991;
+    let stopStart = false;
 
-        // add a circle to each 'g'
-        var circle = en.append("circle")
-            .attr("r",function(d){ return Math.random() * 50 })
-            .attr("fill",function(d,i){ return i % 2 == 0 ? "orange" : "blue" });
+    let circleXL = 80;
+    let circleL = 50;
+    let circleM = 30
 
-        // add a text to each 'g'
-        en.append("text").text(function(d){ return d.name });
+    // call a get request and parse the json data
+    $.get('/getcountries', function (data) {
+        let responseObj = JSON.parse(data);
+        //console.log(responseObj);
 
-        d3.select("circle").transition()
-        .style("background-color", "red");
-    })
-};
+        //filter data to only use countries with employment rates and population
+        let sortedData = responseObj.filter(function (d) { return (d.data.males_aged_15plus_employment_rate_percent && d.data.females_aged_15plus_employment_rate_percent) });
 
-function createCircles() 
-{
-    populationYear = [];
-    populationCount = [];
-    //var g = d3.select("svg").selectAll("g").data(responseObj);
-    console.log("Start for each loop");
-    $.each(responseObj, function (i, item) {
-        //console.log(item);
-        $.each(item.data, function (i, key) {
-            //each data set, eg.... 
-            //female_employment_rate, male_employment_rate, population
-            //console.log(key);
-            if (i == "population_total") {
-                //console.log(i);
-                $.each(key, function (i, value) {
-                    //console.log(key + " : " + value);
-                });
-            }
-        });
+        // select div and create svg 
+        let svg = d3.select("#data_graph")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    });
+        // x axis
+        let x = d3.scaleLinear()
+            .domain([0, 100])
+            .range([0, width]);
 
-    //population total first record
-    //getting year - it is a constant over all countries
-    //popluation number - currently only first records number - need to get min max of all population number and divide by millions to get even spread.
-    var populationFirst = responseObj[0];
-    //console.log(populationFirst.name);
-    $.each(populationFirst.data, function (i, item) {
-        if (i == "population_total") {
-            //console.log(i);
-            $.each(item, function (j, key) {
-                //console.log(i);
+        // append group element and call x axis translate it to the bottom
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
 
-                populationYear[j] = j;
-                populationCount[key] = key;
-                //console.log(key);
-                //console.log(temp);
+        // x axis text label
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height + 50)
+            .text("Males Age 15+ Employment Rate (Percentage)");
 
-            });
-            //console.log(temp);
+        // y axis 
+        let y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height, 0]);
+
+        // append group element and call the y axis
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // y axis text label
+        svg.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", "350")
+            .attr("y", "-20")
+            .text("Females Age 15+ Employment Rate (Percentage)");
+
+        // create default for tooltip hover which will be invisible to start
+        let tooltip = d3.select("#data_graph")
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "black")
+            .style("border-radius", "5px")
+            .style("padding", "10px")
+            .style("color", "white");
+
+        // show and update on mouse hover
+        let showToolTip = function (d) {
+            tooltip
+                .transition()
+                .duration(200);
+
+            tooltip
+                .style("opacity", 1)
+                .html("Country: " + d.name + "<br>Population: " + d.data.population_total[currentYear] + "<br>Female Rate: " + d.data.females_aged_15plus_employment_rate_percent[currentYear] + "%" + "<br>Female Rate: " + d.data.males_aged_15plus_employment_rate_percent[currentYear] + "%")
+                .style("left", (d3.mouse(this)[0]) + "px")
+                .style("top", (d3.mouse(this)[1]) + 180 + "px");
         }
-        //console.log(key + " : " + value);
+
+        let moveToolTip = function (d) {
+            tooltip
+                .style("left", (d3.mouse(this)[0]) + "px")
+                .style("top", (d3.mouse(this)[1]) + 180 + "px");
+        }
+
+        let hideToolTip = function (d) {
+            tooltip
+                .transition()
+                .duration(200)
+                .style("opacity", 0);
+        }
+        // circle scale
+        let z = d3.scaleLinear()
+            .domain([10, 30])
+            .range([1, 10]);
+
+        // add circles
+        svg.append("g")
+            .selectAll("dot")
+            .data(sortedData)
+            .enter()
+            .append("circle")
+            .attr("class", "bubbles")
+            .attr("cx", function (d) { return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]); })
+            .attr("cy", function (d) { return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]); })
+            .attr("r", function (d) {
+                //greater than 100mil
+                if (d.data.population_total[currentYear] > 100000000) {
+                    return z(circleXL);
+                }
+                //greater than 10mill & less then 100mil
+                else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
+                    return z(circleL);
+                }
+                else {
+                    return z(circleM);
+                }
+            })
+            .text(function (d) { return d.name })
+            .style("fill", "blue")
+            .style("opacity", "0.7")
+            .attr("stroke", "black")
+            .on("mouseover", showToolTip)       //on events call the function to show 
+            .on("mousemove", moveToolTip)       //on even move call move tooltip
+            .on("mouseleave", hideToolTip);     //on event leave call hide tool tip
+
+        svg.append("text")
+            .attr("transform", "translate(" + width / 2 + "," + 100 + ")")
+            .text(currentYear)
+            .attr("id", "yearBGText")
+            .attr("class", "currentYearDisplay");
+
+        $("#next").on("click", function () {
+            countryCount += 1;
+            currentYear = countryCount;
+            callReDraw();
+
+        });
+
+        $("#back").on("click", function () {
+            countryCount -= 1;
+            if (countryCount < 1991) {
+                countryCount = 2022;
+            }
+            currentYear = countryCount;
+            callReDraw();
+
+        });
+
+        $("#auto-play").on("click", function () {
+            console.log("AUTO PLAY");
+            stopStart = false;
+            function loopAnimation() {
+                if (stopStart == false) {
+                    setTimeout(function () {
+                        countryCount += 1;
+                        currentYear = countryCount;
+                        callReDraw();
+                        console.log(currentYear);
+                        if (countryCount < 2022) {
+                            loopAnimation();
+                        }
+                        if (countryCount == 2022) {
+                            countryCount = 1990;
+                            loopAnimation();
+                        }                   
+                    }, 1000)
+                }
+            }
+            if (stopStart == false) {
+                loopAnimation();
+            }
+
+        });
+
+        $("#pause").on("click", function () {
+            console.log("pause the animation");
+            stopStart = true
+            currentYear = currentYear;
+            callReDraw();
+        });
+
+        function callReDraw() {
+            if (currentYear == 2023) {
+                countryCount = 1991
+                currentYear = countryCount;
+            }
+            if (currentYear <= 2022) {
+                svg.selectAll("circle")
+                    .transition()
+                    //.delay(10)
+                    .duration(1000)
+                    .attr("cx", function (d) {
+                        return x(d.data.males_aged_15plus_employment_rate_percent[currentYear]);
+                    })
+                    .attr("cy", function (d) {
+                        return y(d.data.females_aged_15plus_employment_rate_percent[currentYear]);
+                    })
+                    .attr("r", function (d) {
+                        //greater than 100mil
+                        if (d.data.population_total[currentYear] > 100000000) {
+                            return z(circleXL);
+                        }
+                        //greater than 10mill & less then 100mil
+                        else if (d.data.population_total[currentYear] > 10000000 && d.data.population_total[currentYear] < 100000000) {
+                            return z(circleL);
+                        }
+                        else {
+                            return z(circleM);
+                        }
+                    })
+                    .text(function (d) { return d.name })
+                    .style("fill", function (d) {
+                        //if females work percetage is greater than males return red color
+                        if (d.data.females_aged_15plus_employment_rate_percent[currentYear] >= 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] < 50) {
+                            return "pink";
+                        }
+                        //if male work percetage is greater than females return blue color
+                        else if (d.data.females_aged_15plus_employment_rate_percent[currentYear] < 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] >= 50) {
+                            return "blue";
+                        }
+                        // both females and male have percentage is over 50
+                        else if (d.data.females_aged_15plus_employment_rate_percent[currentYear] >= 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] >= 50) {
+                            return "orange";
+                        }
+                        // both females and males work percentage is less than 50
+                        else if (d.data.females_aged_15plus_employment_rate_percent[currentYear] < 50 && d.data.males_aged_15plus_employment_rate_percent[currentYear] < 50) {
+                            return "red";
+                        }
+
+                    })
+                    .style("opacity", "0.7")
+                    .attr("stroke", "black");
+
+                svg.select("#yearBGText")
+                    .transition()
+                    .duration(1000)
+                    .text(currentYear);
+            }
+        }
     });
+    colorKeyLegend();
 
-    for (i = 0; i < populationYear.length; i++) {
-        //console.log(populationYear[i]);
-        //console.log(populationCount[i]);
+}
+
+function colorKeyLegend() {
+    let colorKeys = [{ 'key': 'pink', 'text': "Females Over 50%" }, { 'key': 'blue', 'text': "Males Over 50%" }, { 'key': 'orange', 'text': "Both Over 50%" }, { 'key': 'red', 'text': "Both Under 50%" }];
+
+    colorize = function (colorKeys) {
+        let container = document.getElementById('data_graph');
+
+        $.each(colorKeys, function (key, value) {
+            console.log(value.key);
+            let boxContainer = document.createElement("div");
+            boxContainer.className = "align-right";
+            let box = document.createElement("div");
+            let label = document.createElement("span");
+
+            label.innerHTML = value.text;
+            box.className = "box";
+            box.style.backgroundColor = value.key;
+
+            boxContainer.appendChild(box);
+            boxContainer.appendChild(label);
+
+            container.appendChild(boxContainer);
+        });
     }
-    console.log("End for each loop");
 
-
-    var width = 1100;
-    var height = 700;
-    //var temp = [10, 15, 20, 25, 30];
-
-    // Append SVG 
-    var svg = d3.select("svg");
-
-    // Create scale X
-    var scaleX = d3.scaleLinear()
-        .domain([d3.max(populationCount), d3.min(populationCount)])
-        .range([0, width - 100]);
-
-    // Create scale Y
-    var scaleY = d3.scaleLinear()
-        .domain([d3.max(populationYear), d3.min(populationYear)])
-        .range([0, height - 100]);
-
-    // Add scales to x axis
-    var x_axis = d3.axisBottom()
-        .scale(scaleX);
-
-    // Add scale to y axis
-    var y_axis = d3.axisLeft()
-        .scale(scaleY);
-
-    //Append group: "g" and insert x axis
-    svg.append("g")
-        .attr("transform", "translate(90, 600)")
-        .call(x_axis);
-
-    //Append group: "g" and insert y axis
-    svg.append("g")
-        .attr("transform", "translate(90, 10)")
-        .call(y_axis);
-
-    var bar1 = svg.append("circle")
-        .attr("fill", "blue")
-        .attr("transform", function (d) {
-            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
-        })
-        .attr("r", 40)
-        .attr("height", 20)
-        .attr("width", 10)
-
-    var bar2 = svg.append("circle")
-        .attr("fill", "blue")
-        .attr("transform", function (d) {
-            return "translate(" + (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 + ")"
-        })
-        .attr("r", 40)
-        .attr("height", 20)
-        .attr("width", 10)
-
-    function update() {
-        bar1.transition()
-            .ease(d3.easeLinear)
-            .duration(2000)
-            .attr("r", 150)
-
-        bar2.transition()
-            .ease(d3.easeLinear)
-            .duration(2000)
-            .delay(2000)
-            .attr("r", 150)
-    }
-    update();
-
-
-    /*
-
-    var responseObj = data;
-    console.log(responseObj);
-
-    // a common thing is to 'wrap' some elements in a 'g' container (group)
-    // this is like wrapping html elements in a container div
-    var g = d3.select("svg").selectAll("g").data(responseObj);
-
-    // create new 'g' elements for each country
-    var en = g.enter().append("g")
-        .attr("transform",function(d){ 
-        return "translate("+ (Math.random() * 1100) + 50 + "," + (Math.random() * 450) + 50 +")" 
-    });
-
-    // add a circle to each 'g'
-    var circle = en.append("circle")
-        .attr("r",function(d){ return Math.random() * 10 })
-        .attr("fill",function(d,i){ return i % 2 == 0 ? "orange" : "blue" });
-
-    // add a text to each 'g'
-    en.append("text").text(function(d){ return d.name });
-
-    d3.select("circle").transition()
-    .style("background-color", "red");*/
-};
+    colorize(colorKeys);
+}

@@ -1,19 +1,16 @@
-from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify
+from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify, Response
 from mongoengine import *
+from flask_cors import CORS
 import os
 import json
 import csv
 
 app = Flask(__name__)
+CORS(app)
 
 app.config.from_object('config')
 
 connect('my_database')
-
-class User(Document):
-	email = StringField()
-	first_name = StringField()
-	last_name = StringField()
 
 class Country(Document):
 	name = StringField()
@@ -27,15 +24,19 @@ def hello_world():
 	
 @app.route('/inspiration')
 def inspiration():
-	return render_template('inspiration.html')
+	return render_template('inspiration.html'), 200
 
 @app.route('/documentation')
 def documentation():
-	return render_template('documentation.html')
+	return render_template('documentation.html'), 200
 
 @app.route('/graph')
 def graph():
-	return render_template('graph.html')
+	return render_template('graph.html'), 200
+
+@app.route('/countries')
+def viewcountry():
+	return render_template('/countries.html'), 200
 
 @app.route('/loadcsv')
 def loadCSV():
@@ -68,7 +69,12 @@ def loadCSV():
 			country.save()
 
 	#return Country.objects.to_json()
-	return "Success"
+	return "Success", 200
+
+@app.route('/droptable')
+def droptables():
+	Country.drop_collection()
+	return "Success, Countries Tables Dropped", 200
 
 
 
@@ -84,28 +90,30 @@ def getCountries(country_name=None):
 				return countries.to_json(), 200
 			else:
 				message = "Error - no countries found. Please add a country."
-				return message, 200
+				return message, 404
 		if country_name is not None:
 			countries = Country()
 			if Country.objects(name=country_name).count() > 0:
 				countries = Country.objects.get(name=country_name)
+				return countries.to_json(), 200
 			else:
-				countries.name = "Error"
-				countries.data = "Not Found - Please ensure country exisits."
-			return countries.to_json(), 200
+				message = "Error - no country found. Please add a country."
+				return message, 404
 	
 	if request.method == 'POST':
 		newCountry = Country()
 		dict = {}
 		reqName = request.form.get('name')
 		if Country.objects(name=reqName).count() > 0:
-			newCountry = Country.objects.get(name=reqName)
-			dict = newCountry.data
+			# newCountry = Country.objects.get(name=reqName)
+			# dict = newCountry.data
+			message = "Error - Country already exists in database. Please add another country."
+			return message, 409
 		else:
 			newCountry.name = reqName
-			newCountry.dict = dict
-		newCountry.save()
-		return newCountry.to_json(), 200
+			newCountry.data = dict
+			newCountry.save()
+			return newCountry.to_json(), 200
 	
 	if request.method == 'DELETE':
 		delete = request.form.get('dCountry')
@@ -117,13 +125,8 @@ def getCountries(country_name=None):
 				newCountry.delete()
 				return newCountry.to_json(), 200
 			else:
-				newCountry.name = "Error"
-				newCountry.data = "Not Found - Please ensure country exisits."
-				return newCountry.to_json(), 200
-
-@app.route('/countries')
-def viewcountry():
-	return render_template('/countries.html'), 200
+				message = "Error - Country does not exists in database. Please try another country."
+				return message, 404
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0', port=80)

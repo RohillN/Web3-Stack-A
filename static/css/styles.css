@@ -43,3 +43,43 @@ pre code {
     padding: 20px;
     border: 1px solid #b2b2b2;
 }
+
+.currentYearDisplay {
+    opacity: 0.1;
+    color: black;
+    font-size: 120px;
+    text-align: center;
+    text-anchor: middle;
+}
+
+.align-right {
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px
+}
+
+.bubbles {
+    stroke-width: 1px;
+    stroke: white;
+    opacity: 1;
+}
+
+.bubbles:hover {
+    stroke-width: 2px;
+    stroke: black;
+}
+
+.key-style {
+    font-size: 14px;
+    color: black;
+    text-anchor: middle;
+}
+
+.box {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    opacity: 0.7;
+    border: 0.5px solid;
+    border-radius: 50px;
+  }

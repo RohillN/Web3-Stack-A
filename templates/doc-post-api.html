@@ -3,7 +3,7 @@
     <code>
         <h3>Post Country</h3>
         <p><b>POST</b> /getcountries - Post data on country name</p>
-        <p><b>Overview</b><br>- Post data from a form and return country name wanting to be stored.<br>- If the country exists the input will overwrite the pre-existing country name.<br>- If the county has data, it will remain after the overwritten country name.</p>
+        <p><b>Overview</b><br>- Post data from a form and return country name wanting to be stored.<br>- If the country exists, error will occur. Returns status and error message.<br></p>
         <p>Example Usage - <em>New Country</em><br><b>POST</b> /getcountries<br>Posting Data: Test<br><em>returns new country added</em></p>
 [
     {   
@@ -15,16 +15,8 @@
 </code>
 <hr>
 <code>
-    <p>Example Usage - <em>Exsisting Country</em><br><b>POST</b> /getcountries<br>Posting Data: Japan<br><em>returns overwritten country and data</em></p>
-[
-    {   "_id": {"$oid": "5ed5bc030f7ba0588f332d6c"}, 
-        "name": "Japan", 
-        "data": {
-                    "females_aged_15plus_employment_rate_percent": {data},
-                    "population_total": {data},
-                    "males_aged_15plus_employment_rate_percent": {data}
-                }
-    }
-]
-</code>
+    <h4>Errors - Post Existing Country</h4>
+    <p>Status: 409<br>If country being added already exists in database, then return a message.<br>Example Usage<br><b>POST</b> /getcountries<br>Posting Data: Japan<br><em>returns error message</em></p>
+    "Error - Country already exists in database. Please add another country."
+    </code>
 </pre>
