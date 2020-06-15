@@ -10,34 +10,41 @@ CORS(app)
 
 app.config.from_object('config')
 
-connect('my_database')
+connect('my_database')	#connect the a database table in mongo
 
+#define class for countries 
 class Country(Document):
 	name = StringField()
 	data = DictField()
 
+#route for index page, status 200 for success
 @app.route('/')
 @app.route('/index')
 @app.route('/home')
 def hello_world():  
 	return render_template('index.html'), 200
 	
+#route for inspiration page, status 200 for success
 @app.route('/inspiration')
 def inspiration():
 	return render_template('inspiration.html'), 200
 
+#route for documentation page, status 200 for success
 @app.route('/documentation')
 def documentation():
 	return render_template('documentation.html'), 200
 
+#route for graph page, status 200 for success
 @app.route('/graph')
 def graph():
 	return render_template('graph.html'), 200
 
+#route for countries page, status 200 for success
 @app.route('/countries')
 def viewcountry():
 	return render_template('/countries.html'), 200
 
+#load csv files from the files folder using the config file to point to the folder, status 200 for success
 @app.route('/loadcsv')
 def loadCSV():
 	for file in os.listdir(app.config['FILES_FOLDER']):
@@ -71,17 +78,20 @@ def loadCSV():
 	#return Country.objects.to_json()
 	return "Success", 200
 
+#drops countries in database
 @app.route('/droptable')
 def droptables():
 	Country.drop_collection()
 	return "Success, Countries Tables Dropped", 200
 
 
-
+#api, get and post methods at '/getcountries' route
+#api, get and delete at '/getcountries/<name>' get or add specific country
 @app.route('/getcountries', methods=['GET', 'POST'])
 @app.route('/getcountries/<country_name>', methods=['GET', 'DELETE'])
 def getCountries(country_name=None):
 	countryList = []
+	#get countries if no input was made
 	if request.method == 'GET':
 		country = None
 		if country_name is None:
@@ -91,6 +101,7 @@ def getCountries(country_name=None):
 			else:
 				message = "Error - no countries found. Please add a country."
 				return message, 404
+		#get specific country if country is entered, then check if it exists
 		if country_name is not None:
 			countries = Country()
 			if Country.objects(name=country_name).count() > 0:
@@ -99,14 +110,12 @@ def getCountries(country_name=None):
 			else:
 				message = "Error - no country found. Please add a country."
 				return message, 404
-	
+	#post request: get user input, check if it exists
 	if request.method == 'POST':
 		newCountry = Country()
 		dict = {}
 		reqName = request.form.get('name')
 		if Country.objects(name=reqName).count() > 0:
-			# newCountry = Country.objects.get(name=reqName)
-			# dict = newCountry.data
 			message = "Error - Country already exists in database. Please add another country."
 			return message, 409
 		else:
@@ -114,7 +123,7 @@ def getCountries(country_name=None):
 			newCountry.data = dict
 			newCountry.save()
 			return newCountry.to_json(), 200
-	
+	#delete specific country entered by user, checks if the country exists in db
 	if request.method == 'DELETE':
 		delete = request.form.get('dCountry')
 		newCountry = Country()
