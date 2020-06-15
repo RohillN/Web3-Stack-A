@@ -4,10 +4,51 @@
     {% include "navigation.html" %}
 </header>
 
-<!-- <img class='img-resize' src="{{ url_for('static', filename='img/records.jpg') }}" alt="lake house"> -->
-<div class="row">
-    <div class="card bg-dark text-white">
+<!-- <div class="row bg-main"> -->
+<!-- <div class="card bg-dark text-white">
         <img src="{{ url_for('static', filename='img/records.jpg') }}" class="img-resize card-img" alt="">
+    </div> -->
+<!-- </div> -->
+
+<!-- Full Page Image Header with Vertically Centered Content -->
+<header class="index">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12 text-center">
+                <h1 class="font-weight-light"><b>Web 3</b>Data Visualization</h1>
+                <p class="lead">Flask, D3js</p>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="top-space">
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <a href="#">D3 Graph</a>
+                        </h4>
+                        <p class="card-text">Data visualization, using D3js to create a bubble graph of country
+                            population from 1991 to 2022 of females and males ages 15 plus employment rate.</p>
+                        <a class="btn btn-primary" href="/graph">View</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <a href="#">Countries</a>
+                        </h4>
+                        <p class="card-text">View all countries, view specific country, create a country record and
+                            delete a country.</p>
+                        <a class="btn btn-primary" href="/countries">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

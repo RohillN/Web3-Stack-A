@@ -52,16 +52,19 @@ pre code {
     text-anchor: middle;
 }
 
-.center-space {
-    margin-left: 20px;
-    margin-right: 20x;
+.index {
+    height: 100vh;
+    min-height: 500px;
+    background-color: #f7efee;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-.index-space {
-    margin-left: 20px;
-    margin-right: 20x;
-    margin-top: 100px;
+.top-space {
+    margin-top: 20px;
 }
+
 
 .align-right {
     float: right;
