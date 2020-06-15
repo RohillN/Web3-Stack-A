@@ -1,17 +1,20 @@
+// console log the success of the script being loaded
 $(function () {
     console.log("Statics route for scripts loaded!");
 });
 
 //GET: all countries from mongodb
 function getAll() {
+    // ajax / jquery call
+    // on success display the data from the api 
+    // on fail display error message from the api
     $.get('/getcountries', function (data) {
         console.log(data);
         $('#temp-hold').text(data);
-    })
-        .fail(function (data) {
-            console.log(data);
-            $('#temp-hold').text(data.responseText);
-        });
+    }).fail(function (data) {
+        console.log(data);
+        $('#temp-hold').text(data.responseText);
+    });
 };
 
 //GET: single country search
@@ -19,6 +22,10 @@ function getSingleCountry() {
     let $searchName = $('#sCountry');
     let $foundCountry = $('#foundCountry');
 
+    // if user input is not null
+    // then ajax / jquery call with a get method
+    // on success display the data returned from the api
+    // on fail display error message from the api
     if ($searchName.val().length != 0) {
         $.get('/getcountries/' + $searchName.val(), function (data) {
             console.log(data);
@@ -42,16 +49,22 @@ function getSingleCountry() {
 function postCountry() {
     let $name = $('#name');
     let hasName;
+    // check if the user input is not null
     if ($name.val().length != 0) {
         var storeCountry = {
             "name": $name.val()
         };
         hasName = true;
     }
+    // if no input was made, alert the user to enter again
     else {
         alert('Invalid Input, Please Try Again');
         hasName = false;
     }
+    // if user has entered a name
+    // ajax / jquery call with a post method type
+    // on success display the data that has been entered
+    // on fail display the error message from the api
     if (hasName) {
         $.post(('/getcountries'), storeCountry, function (data) {
             console.log(data); storeCountry
@@ -71,17 +84,23 @@ function postCountry() {
 function DeleteOne() {
     let $deleteName = $('#dCountry');
     let hasName;
+    // checking if input is not null 
     if ($deleteName.val().length != 0) {
         var $countryToDelete = {
             'name': $deleteName.val()
         }
         hasName = true;
     }
+    // if no input is made, alert the user to enter again
     else {
         alert('Invalid Input, Please Try Again');
         hasName = false
     }
 
+    // if user has entered a name
+    // ajax call with a delete method type
+    // on success display the data sent back from api
+    // on fail display the error message from the api
     if (hasName) {
         $.ajax({
             type: 'DELETE',
@@ -103,7 +122,7 @@ function DeleteOne() {
 
 // start / load d3 to run the graph
 function startAnimation() {
-    d3.selectAll("#data_graph > *").remove();
+    d3.selectAll("#data_graph > *").remove();   // removed all from svg then recreate 
 
     let margin = { top: 100, right: 20, bottom: 60, left: 50 };
     let width = 1110 - margin.left - margin.right;
@@ -189,12 +208,14 @@ function startAnimation() {
                 .style("top", (d3.mouse(this)[1]) + 180 + "px");
         }
 
+        //on mouse move, move the tool tip box to the mouse location
         let moveToolTip = function (d) {
             tooltip
                 .style("left", (d3.mouse(this)[0]) + "px")
                 .style("top", (d3.mouse(this)[1]) + 180 + "px");
         }
 
+        //if mouse is not on a circle, then set the tooltips box opacity to zero (no visable)
         let hideToolTip = function (d) {
             tooltip
                 .transition()
@@ -206,7 +227,9 @@ function startAnimation() {
             .domain([10, 30])
             .range([1, 10]);
 
-        // add circles
+        // add circles, define the data to enter at
+        // assign x = male rate && assign y = female rate
+        // assign radius to populations limit 
         svg.append("g")
             .selectAll("dot")
             .data(sortedData)
@@ -236,12 +259,15 @@ function startAnimation() {
             .on("mousemove", moveToolTip)       //on even move call move tooltip
             .on("mouseleave", hideToolTip);     //on event leave call hide tool tip
 
+        //create a text element, text will be the current year 
         svg.append("text")
             .attr("transform", "translate(" + width / 2 + "," + 100 + ")")
             .text(currentYear)
             .attr("id", "yearBGText")
             .attr("class", "currentYearDisplay");
 
+        // on click of button increment the countryCount
+        // recall the drawing function
         $("#next").on("click", function () {
             countryCount += 1;
             currentYear = countryCount;
@@ -249,6 +275,8 @@ function startAnimation() {
 
         });
 
+        // on click of button decrement the countryCount
+        // recall the drawing function
         $("#back").on("click", function () {
             countryCount -= 1;
             if (countryCount < 1991) {
@@ -259,6 +287,9 @@ function startAnimation() {
 
         });
 
+        // on click of button, start the animation loop
+        // loopAnimation will have a delay between each loop
+        // at the end count reset countryCount to restart the loop
         $("#auto-play").on("click", function () {
             console.log("AUTO PLAY");
             stopStart = false;
@@ -275,7 +306,7 @@ function startAnimation() {
                         if (countryCount == 2022) {
                             countryCount = 1990;
                             loopAnimation();
-                        }                   
+                        }
                     }, 1000)
                 }
             }
@@ -285,6 +316,8 @@ function startAnimation() {
 
         });
 
+        // on click set stopStart to true, recall draw
+        // if stopStart if true then auto play will stop 
         $("#pause").on("click", function () {
             console.log("pause the animation");
             stopStart = true
@@ -292,6 +325,8 @@ function startAnimation() {
             callReDraw();
         });
 
+        //function will display current year
+        //draw cicles on x,y and r for the current year
         function callReDraw() {
             if (currentYear == 2023) {
                 countryCount = 1991
@@ -351,10 +386,14 @@ function startAnimation() {
             }
         }
     });
+    // call and draw color key legends
     colorKeyLegend();
 
 }
 
+// function will create two div elements and a span
+// assign class names to the element
+// loop through the the object of color keys and text
 function colorKeyLegend() {
     let colorKeys = [{ 'key': 'pink', 'text': "Females Over 50%" }, { 'key': 'blue', 'text': "Males Over 50%" }, { 'key': 'orange', 'text': "Both Over 50%" }, { 'key': 'red', 'text': "Both Under 50%" }];
 

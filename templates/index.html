@@ -1,12 +1,14 @@
 {% include "head.html" %}
 
 <header>
-{% include "navigation.html" %}
+    {% include "navigation.html" %}
 </header>
 
-        <img class='img-resize' src="{{ url_for('static', filename='img/records.jpg') }}" alt="lake house">
-
-    <div class="container">
-        <p>{{ info }}</p>
+<!-- <img class='img-resize' src="{{ url_for('static', filename='img/records.jpg') }}" alt="lake house"> -->
+<div class="row">
+    <div class="card bg-dark text-white">
+        <img src="{{ url_for('static', filename='img/records.jpg') }}" class="img-resize card-img" alt="">
     </div>
+</div>
+
 {% include "footer.html" %}
