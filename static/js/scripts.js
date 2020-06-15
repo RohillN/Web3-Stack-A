@@ -204,15 +204,15 @@ function startAnimation() {
             tooltip
                 .style("opacity", 1)
                 .html("Country: " + d.name + "<br>Population: " + d.data.population_total[currentYear] + "<br>Female Rate: " + d.data.females_aged_15plus_employment_rate_percent[currentYear] + "%" + "<br>Female Rate: " + d.data.males_aged_15plus_employment_rate_percent[currentYear] + "%")
-                .style("left", (d3.mouse(this)[0]) + "px")
-                .style("top", (d3.mouse(this)[1]) + 180 + "px");
+                .style("left", (d3.mouse(this)[0]) + 300 + "px")
+                .style("top", (d3.mouse(this)[1]) + 250 + "px");
         }
 
         //on mouse move, move the tool tip box to the mouse location
         let moveToolTip = function (d) {
             tooltip
-                .style("left", (d3.mouse(this)[0]) + "px")
-                .style("top", (d3.mouse(this)[1]) + 180 + "px");
+                .style("left", (d3.mouse(this)[0]) + 300 + "px")
+                .style("top", (d3.mouse(this)[1]) + 250 + "px");
         }
 
         //if mouse is not on a circle, then set the tooltips box opacity to zero (no visable)

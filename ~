@@ -1,0 +1,8 @@
+server {
+	location / {
+		proxy_pass http://10.25.100.26;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+
+	}
+}
