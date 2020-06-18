@@ -1,0 +1,101 @@
+$back-color: #f7f7f7;
+$back-color-index: #f7efee;
+$border-block-color: #b2b2b2;
+
+header {
+    margin: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.standard-spacing {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.img-resize {
+    width: 100%;
+}
+
+pre {
+    display: block;
+    color: black;
+}
+
+pre code {
+    font-size: inherit;
+    color: inherit;
+    word-break: normal;
+}
+
+.api-block {
+    background-color: $back-color;
+    padding: 20px;
+    border: 1px solid $border-block-color;
+    margin-bottom: 150px;
+    padding-bottom: 150px;
+}
+
+.block-code {
+    background-color: $back-color;
+    padding: 20px;
+    border: 1px solid $border-block-color;
+}
+
+.currentYearDisplay {
+    opacity: 0.1;
+    color: black;
+    font-size: 120px;
+    text-align: center;
+    text-anchor: middle;
+}
+
+.index {
+    height: 100vh;
+    min-height: 500px;
+    background-color: $back-color-index;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.top-space {
+    margin-top: 20px;
+}
+
+
+.align-right {
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px
+}
+
+.bubbles {
+    stroke-width: 1px;
+    stroke: white;
+    opacity: 1;
+}
+
+.bubbles:hover {
+    stroke-width: 2px;
+    stroke: black;
+}
+
+.key-style {
+    font-size: 14px;
+    color: black;
+    text-anchor: middle;
+}
+
+.box {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    opacity: 0.7;
+    border: 0.5px solid;
+    border-radius: 50px;
+}
