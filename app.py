@@ -1,12 +1,15 @@
 from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify, Response
 from mongoengine import *
 from flask_cors import CORS
+import sass
 import os
 import json
 import csv
 
 app = Flask(__name__)
+sass.compile(dirname=('assets/scss', 'static/css'))
 CORS(app)
+
 
 app.config.from_object('config')
 
@@ -115,6 +118,7 @@ def getCountries(country_name=None):
 		newCountry = Country()
 		dict = {}
 		reqName = request.form.get('name')
+		print(reqName)
 		if Country.objects(name=reqName).count() > 0:
 			message = "Error - Country already exists in database. Please add another country."
 			return message, 409
